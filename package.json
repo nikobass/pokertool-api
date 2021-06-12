@@ -1,0 +1,28 @@
+{
+  "name": "pokertool",
+  "version": "1.0.0",
+  "description": "\"# projet-poker-back\"",
+  "main": "index.js",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2",
+    "tedious": "^11.0.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/O-clock-Robin/projet-poker-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/O-clock-Robin/projet-poker-back/issues"
+  },
+  "homepage": "https://github.com/O-clock-Robin/projet-poker-back#readme"
+}
