@@ -45,6 +45,7 @@ router.post('/chip/:userId', chipController.createChip);
 // update user's chips
 router.patch('/chip/:userId', chipController.updateChip);
 
+// ERROR 404
 router.use(mainController.error404);
 
 module.exports = router; 
