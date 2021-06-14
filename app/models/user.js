@@ -6,7 +6,7 @@ class User extends Model {};
 User.init({ 
     user_name: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: false},
     email: {
         type: DataTypes.TEXT,
         allowNull: false},
@@ -14,9 +14,10 @@ User.init({
         type: DataTypes.TEXT,
         allowNull: false},
     key_password: DataTypes.TEXT
-},{
-    sequelize,
-    tableName: 'user',
-})
+    },{
+        sequelize,
+        tableName: 'user',
+    }
+);
 
 module.exports = User;

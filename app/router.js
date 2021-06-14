@@ -1,13 +1,15 @@
 const express = require('express');
-const path = require('path');
+const auth = require('./middleware/auth');
 
 // CONTROLLERS' IMPORT 
-const authController = require('./controllers/mainController');
-const chipController = require('./controllers/mainController');
-const distributorController = require('./controllers/mainController');
+const authController = require('./controllers/authController');
+const chipController = require('./controllers/chipController');
+const distributorController = require('./controllers/distributorController');
 const mainController = require('./controllers/mainController');
-const profilController = require('./controllers/mainController');
-const tournamentController = require('./controllers/mainController');
+const profilController = require('./controllers/profilController');
+const tournamentController = require('./controllers/tournamentController');
+
+const { authenticateToken } = require('./middleware/auth');
 
 const router = express.Router();
 
@@ -15,47 +17,52 @@ const router = express.Router();
 // create user
 router.post('/signup', authController.createUser);
 // Données d'authentification du user
-router.get('/signin', authController.getUser);
-// reset password
-router.get('/resetPassword/:token', authController.getResetPassword);
-// modification du TOKEN
-router.patch('/resetPassword/:token', authController.updateResetPassword);
+router.post('/signin', authController.authUser);
 
-// PROFIL
-// user's profil
-router.get('/profil/:userId', profilController.getProfil);
-// delete
-router.delete('/profil/:userId', profilController.deleteProfil);
-// update
-router.patch('/profil/:userId', profilController.updateProfil);
+// test JWT
+router.get('/test/:id', auth, authController.test);
 
-// TOURNAMENT
-// tournaments' datas
-router.get('/tournaments', tournamentController.getAllTournaments);
-// create a tournament
-router.post('/tournament', tournamentController.createTournament);
-// tournament's datas
-router.get('/tournament/:id', tournamentController.getOneTournament);
-// update a tournament
-router.patch('/tournament/:id', tournamentController.updateTournament);
-// delete a tournament
-router.delete('/tournament/:id', tournamentController.deleteTournament);
-// tournament's user
-router.get('timer/:tournamentId', tournamentController.getTimerTournament);
 
-// CHIP
-// user's chips
-router.get('/chip/:userId', chipController.getChip);
-// create user's chips
-router.post('/chip/:userId', chipController.createChip);
-// update user's chips
-router.patch('/chip/:userId', chipController.updateChip);
+// // reset password
+// router.get('/resetPassword/:token', authController.getResetPassword);
+// // modification du TOKEN
+// router.patch('/resetPassword/:token', authController.updateResetPassword);
 
-// DISTRIBUTOR
-// données distributor
-router.get('/distributor/:tournamentId', distributor.getDistributor);
-// modification distributor
-router.patch('/distributor/:tournamentId', distributor.updateDistributor);
+// // PROFIL
+// // user's profil
+// router.get('/profil/:userId', profilController.getProfil);
+// // delete
+// router.delete('/profil/:userId', profilController.deleteProfil);
+// // update
+// router.patch('/profil/:userId', profilController.updateProfil);
+
+// // TOURNAMENT
+// // tournaments' datas
+// router.get('/tournaments', tournamentController.getAllTournaments);
+// // create a tournament
+// router.post('/tournament', tournamentController.createTournament);
+// // tournament's datas
+// router.get('/tournament/:id', tournamentController.getOneTournament);
+// // update a tournament
+// router.patch('/tournament/:id', tournamentController.updateTournament);
+// // delete a tournament
+// router.delete('/tournament/:id', tournamentController.deleteTournament);
+// // tournament's user
+// router.get('timer/:tournamentId', tournamentController.getTimerTournament);
+
+// // CHIP
+// // user's chips
+// router.get('/chip/:userId', chipController.getChip);
+// // create user's chips
+// router.post('/chip/:userId', chipController.createChip);
+// // update user's chips
+// router.patch('/chip/:userId', chipController.updateChip);
+
+// // DISTRIBUTOR
+// // données distributor
+// router.get('/distributor/:tournamentId', distributor.getDistributor);
+// // modification distributor
+// router.patch('/distributor/:tournamentId', distributor.updateDistributor);
 
 // ERROR 404
 router.use(mainController.error404);

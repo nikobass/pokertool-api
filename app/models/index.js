@@ -1,4 +1,4 @@
-const Cashprice = require('./casprice');
+const Cashprice = require('./cashprice');
 const Chip = require('./chip');
 const Distribution = require('./distribution');
 const Structure = require('./structure');
@@ -46,15 +46,15 @@ Cashprice.belongsTo(Tournament, {
     foreignKey: 'tournament_id'
 });
 
-Tournament.hasMany(Structure, {
-    as: 'structures',
-    foreignKey: 'tournament_id'
-});
+// Tournament.hasMany(Structure, {
+//     as: 'structures',
+//     foreignKey: 'tournament_id'
+// });
 
-Structure.belongsTo(Tournament, {
-    as: 'tournament',
-    foreignKey: 'tournament_id',
-});
+// Structure.belongsTo(Tournament, {
+//     as: 'tournament',
+//     foreignKey: 'tournament_id',
+// });
 
 Tournament.belongsToMany(Structure, {
     as: 'structures',
@@ -72,4 +72,5 @@ Structure.belongsToMany(Tournament, {
     timestamps: false
 })
 
-module.exports = { List, Card, Tag };
+module.exports = { Cashprice, Chip, Distribution, Structure, Tournament, User };
+
