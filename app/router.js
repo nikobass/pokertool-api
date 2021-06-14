@@ -2,18 +2,24 @@ const express = require('express');
 const path = require('path');
 
 // CONTROLLERS' IMPORT 
+const authController = require('./controllers/mainController');
+const chipController = require('./controllers/mainController');
+const distributorController = require('./controllers/mainController');
 const mainController = require('./controllers/mainController');
+const profilController = require('./controllers/mainController');
+const tournamentController = require('./controllers/mainController');
 
 const router = express.Router();
 
 // AUTHENTIFICATION + CONNEXION
 // create user
 router.post('/signup', authController.createUser);
-// authentification
-router.post('/signin', authController.authUser);
+// Données d'authentification du user
+router.get('/signin', authController.getUser);
 // reset password
-router.get('/resetPassword/:token', authController.resetPassword);
-
+router.get('/resetPassword/:token', authController.getResetPassword);
+// modification du TOKEN
+router.patch('/resetPassword/:token', authController.updateResetPassword);
 
 // PROFIL
 // user's profil
@@ -44,6 +50,12 @@ router.get('/chip/:userId', chipController.getChip);
 router.post('/chip/:userId', chipController.createChip);
 // update user's chips
 router.patch('/chip/:userId', chipController.updateChip);
+
+// DISTRIBUTOR
+// données distributor
+router.get('/distributor/:tournamentId', distributor.getDistributor);
+// modification distributor
+router.patch('/distributor/:tournamentId', distributor.updateDistributor);
 
 // ERROR 404
 router.use(mainController.error404);

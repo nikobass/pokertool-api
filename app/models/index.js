@@ -72,6 +72,4 @@ Structure.belongsToMany(Tournament, {
     timestamps: false
 })
 
-
-
 module.exports = { List, Card, Tag };
