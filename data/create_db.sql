@@ -7,14 +7,16 @@ DROP TABLE IF EXISTS
 "tournament",
 "chip",
 "distribution",
-"cashprice";
+"cashprice",
+"tournament_has_structure";
 
 CREATE TABLE IF NOT EXISTS "user" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "id" serial PRIMARY KEY,
     "user_name" VARCHAR(128) NOT NULL,
-    "email" VARCHAR(128) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
     "password" TEXT NOT NULL,
+    "key_password" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -51,7 +53,7 @@ CREATE TABLE IF NOT EXISTS "chip" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "id" serial PRIMARY KEY,
     "quantity" INTEGER NOT NULL,
-    "color"  TEXT NOT NULL,
+    "color" TEXT NOT NULL,
     "value" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL REFERENCES "user" ("id"),
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -62,6 +64,7 @@ CREATE TABLE IF NOT EXISTS "distribution" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "id" serial PRIMARY KEY,
     "quantity" INTEGER NOT NULL,
+    "color" VARCHAR(7) NOT NULL,
     "value" INTEGER NOT NULL,
     "tournament_id" INTEGER NOT NULL REFERENCES "tournament" ("id"),
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -76,6 +79,13 @@ CREATE TABLE IF NOT EXISTS "cashprice" (
     "tournament_id" INTEGER NOT NULL REFERENCES "tournament" ("id"),
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "tournament_has_structure"(
+    "tournament_id" INTEGER NOT NULL REFERENCES "tournament"("id") ON DELETE CASCADE,
+    "structure_id" INTEGER NOT NULL REFERENCES "structure"("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY("tournament_id", "structure_id")
 );
 
 COMMIT;

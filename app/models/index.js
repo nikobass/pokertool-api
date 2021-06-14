@@ -56,4 +56,22 @@ Structure.belongsTo(Tournament, {
     foreignKey: 'tournament_id',
 });
 
+Tournament.belongsToMany(Structure, {
+    as: 'structures',
+    through: 'tournament_has_structure',
+    foreignKey: 'tournament_id',
+    otherKey: 'structure_id',
+    timestamps: false
+})
+
+Structure.belongsToMany(Tournament, {
+    as: 'tournaments',
+    through: 'tournament_has_structure',
+    foreignKey: 'structure_id',
+    otherKey: 'tournament_id',
+    timestamps: false
+})
+
+
+
 module.exports = { List, Card, Tag };
