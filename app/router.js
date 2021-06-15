@@ -12,8 +12,6 @@ const tournamentController = require('./controllers/tournamentController');
 const router = express.Router();
 
 // AUTHENTIFICATION + CONNEXION
-// create user
-router.post('/signup', authController.createUser);
 // Données d'authentification du user
 router.post('/signin', authController.authUser);
 // reset password
@@ -22,10 +20,12 @@ router.post('/signin', authController.authUser);
 //router.patch('/resetPassword/:token', authController.updateResetPassword);
 
 // PROFIL
+// create user
+router.post('/signup', profilController.createUser);
 // user's profil
 //router.get('/profil/:userId', profilController.getProfil);
 // delete
-//router.delete('/profil/:userId', profilController.deleteProfil);
+router.delete('/profil/:userId', profilController.deleteProfil);
 // update
 //router.patch('/profil/:userId', profilController.updateProfil);
 
