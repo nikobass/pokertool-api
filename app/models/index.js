@@ -1,4 +1,4 @@
-const Cashprice = require('./casprice');
+const Cashprice = require('./cashprice');
 const Chip = require('./chip');
 const Distribution = require('./distribution');
 const Structure = require('./structure');

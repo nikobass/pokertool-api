@@ -1,6 +1,8 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 
+const { generateAccessToken } = require("../utils");
+
 const authController = {
  // CREATION D'UN UTILISATEUR
  createUser: async (req, res) => {
@@ -59,7 +61,6 @@ const authController = {
    //res.status(500).json({error: 'REQUETE INVALIDE'});
   }
  },
-
 
 };
 
