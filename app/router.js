@@ -15,7 +15,7 @@ const router = express.Router();
 // create user
 router.post('/signup', authController.createUser);
 // Données d'authentification du user
-router.get('/signin', authController.getUser);
+router.post('/signin', authController.authUser);
 // reset password
 router.get('/resetPassword/:token', authController.getResetPassword);
 // modification du TOKEN
