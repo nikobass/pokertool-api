@@ -3,17 +3,19 @@ const bcrypt = require("bcrypt");
 const { generateAccessToken } = require("../utils");
 
 const authController = {
+ // CREATION D'UN UTILISATEUR
  createUser: async (req, res) => {
   try {
    const data = req.body;
-   console.log(data);
 
    // cryptage du password
    const salt = await bcrypt.genSalt(10);
    data.password = await bcrypt.hash(req.body.password, salt);
 
+   // création de l'utilisateur
    const user = await User.create(data);
    console.log("USER créé avec succés !!!!");
+
    res.status(201).json(user);
   } catch (error) {
    //console.trace(error);
@@ -23,6 +25,7 @@ const authController = {
   }
  },
 
+ // AUTENTIFICATION D'UN UTILISATEUR
  authUser: async (req, res) => {
   try {
    // on récupére l'utilisateur qui possède l'email
@@ -51,16 +54,18 @@ const authController = {
 
    // et on repart sur la page d'accueil
    return res.redirect("/");
+
   } catch (err) {
    //console.trace(err);
-   res.status(500).send(err);
+   //res.status(500).json({error: 'REQUETE INVALIDE'});
   }
  },
 
+ // TEST D'UN TOKEN
  test: async (req, res) => {
   try {
    const testId = parseInt(req.params.id, 10);
-   console.log(testId);
+   console.log('Le test est OK ==> ID = ', testId);
 
    res.status(201).json(testId);
   } catch (error) {
