@@ -1,5 +1,8 @@
 const express = require('express');
-const path = require('path');
+
+// test JWT
+const { auth } = require('./middleware/auth');
+const jwtController = require('./controllers/jwtController');
 
 // CONTROLLERS' IMPORT 
 const authController = require('./controllers/authController');
@@ -10,6 +13,9 @@ const profilController = require('./controllers/profilController');
 const tournamentController = require('./controllers/tournamentController');
 
 const router = express.Router();
+
+// test JWT
+router.post('/test', auth, jwtController.test);
 
 // AUTHENTIFICATION + CONNEXION
 // Données d'authentification du user
