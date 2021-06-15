@@ -30,12 +30,13 @@ const authController = {
  authUser: async (req, res) => {
   try {
    // on récupére l'utilisateur qui possède l'email
+   console.log("test");
    const user = await User.findOne({
     where: {
      email: req.body.email,
     },
    });
-
+   console.log("test2");
    if (!user) {
     return console.log("Cet email n'existe pas.");
    }
@@ -49,7 +50,7 @@ const authController = {
    // si tout va bien, on renvoie l'ID du user et on génére le TOKEN...
    console.log("Tout est OK, le USER peut entrer");
    res.status(200).json({
-    userId: user.id,
+    nickname: user.user_name,
     token: generateAccessToken({ userId: user.id }),
    });
 

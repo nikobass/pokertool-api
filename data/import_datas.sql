@@ -1,9 +1,9 @@
 BEGIN;
 
 INSERT INTO "user" ("id", "user_name", "email", "password") VALUES
-(1, 'Yann', 'yanne@at.fr', '0000'),
-(2, 'Noë', 'noe@at.fr', '0000'),
-(3, 'Etienne', 'etiennes@at.fr', '0000');
+(1, 'Yann', 'yanne@at.fr', '$2b$10$d6pBCdawfZu4SbgGTg6Ei.CGBROLQnxzE0IfswQ.qWJ80pVX1xCLS'),
+(2, 'Noë', 'noe@at.fr', '$2b$10$d6pBCdawfZu4SbgGTg6Ei.CGBROLQnxzE0IfswQ.qWJ80pVX1xCLS'),
+(3, 'Etienne', 'etiennes@at.fr', '$2b$10$d6pBCdawfZu4SbgGTg6Ei.CGBROLQnxzE0IfswQ.qWJ80pVX1xCLS');
 
 INSERT INTO "structure" ("id", "stage", "small_blind", "big_blind") VALUES
 (1, 1, 10, 20),
