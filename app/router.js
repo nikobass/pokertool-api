@@ -11,7 +11,13 @@ const tournamentController = require('./controllers/tournamentController');
 
 const { authenticateToken } = require('./middleware/auth');
 
+const { jwtTest } = require('./authMiddleware');
+
 const router = express.Router();
+
+
+
+//jwtTest();
 
 // AUTHENTIFICATION + CONNEXION
 // create user
@@ -20,7 +26,7 @@ router.post('/signup', authController.createUser);
 router.post('/signin', authController.authUser);
 
 // test JWT
-router.get('/test/:id', auth, authController.test);
+router.post('/test', auth, authController.test);
 
 
 // // reset password
