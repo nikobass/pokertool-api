@@ -2,12 +2,12 @@ const express = require('express');
 const path = require('path');
 
 // CONTROLLERS' IMPORT 
-const authController = require('./controllers/mainController');
-const chipController = require('./controllers/mainController');
-const distributorController = require('./controllers/mainController');
+const authController = require('./controllers/authController');
+const chipController = require('./controllers/chipController');
+const distributionController = require('./controllers/distributionController');
 const mainController = require('./controllers/mainController');
-const profilController = require('./controllers/mainController');
-const tournamentController = require('./controllers/mainController');
+const profilController = require('./controllers/profilController');
+const tournamentController = require('./controllers/tournamentController');
 
 const router = express.Router();
 
@@ -53,9 +53,9 @@ router.patch('/chip/:userId', chipController.updateChip);
 
 // DISTRIBUTOR
 // données distributor
-router.get('/distributor/:tournamentId', distributor.getDistributor);
+router.get('/distributor/:tournamentId', distributionController.getDistributor);
 // modification distributor
-router.patch('/distributor/:tournamentId', distributor.updateDistributor);
+router.patch('/distributor/:tournamentId', distributionController.updateDistributor);
 
 // ERROR 404
 router.use(mainController.error404);
