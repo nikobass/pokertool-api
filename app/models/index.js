@@ -46,23 +46,13 @@ Cashprice.belongsTo(Tournament, {
     foreignKey: 'tournament_id'
 });
 
-Tournament.hasMany(Structure, {
-    as: 'structures',
-    foreignKey: 'tournament_id'
-});
-
-Structure.belongsTo(Tournament, {
-    as: 'tournament',
-    foreignKey: 'tournament_id',
-});
-
 Tournament.belongsToMany(Structure, {
     as: 'structures',
     through: 'tournament_has_structure',
     foreignKey: 'tournament_id',
     otherKey: 'structure_id',
     timestamps: false
-})
+});
 
 Structure.belongsToMany(Tournament, {
     as: 'tournaments',
@@ -70,6 +60,6 @@ Structure.belongsToMany(Tournament, {
     foreignKey: 'structure_id',
     otherKey: 'tournament_id',
     timestamps: false
-})
+});
 
-module.exports = { List, Card, Tag };
+module.exports = { Cashprice, Chip, Distribution, Structure, Tournament, User };
