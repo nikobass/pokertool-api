@@ -14,22 +14,19 @@ const tournamentController = require('./controllers/tournamentController');
 
 const router = express.Router();
 
-// test JWT
-router.post('/test', auth, jwtController.test);
-
 // AUTHENTIFICATION + CONNEXION
 // Données d'authentification du user
 router.post('/signin', authController.authUser);
 // reset password
 //router.get('/resetPassword/:email', authController.getResetPassword);
-// modification du TOKEN
+// modification du key_password
 //router.patch('/resetPassword/:email', authController.updateResetPassword);
 
 // PROFIL
 // create user
 router.post('/signup', profilController.createUser);
 // ==> user's profil
-router.get('/profil/:userId', profilController.getProfil);
+router.get('/profil/:userId', auth, profilController.getProfil);
 // delete
 router.delete('/profil/:userId', auth, profilController.deleteProfil);
 // update
