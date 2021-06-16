@@ -28,7 +28,7 @@ router.post('/signin', authController.authUser);
 // PROFIL
 // create user
 router.post('/signup', profilController.createUser);
-// user's profil
+// ==> user's profil
 //router.get('/profil/:userId', profilController.getProfil);
 // delete
 router.delete('/profil/:userId', profilController.deleteProfil);

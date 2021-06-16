@@ -29,7 +29,7 @@ const authController = {
    console.log("Tout est OK, le USER peut entrer");
    res.status(200).json({
     nickname: user.user_name,
-    email: user.email,
+    userId: user.id,
     token: generateAccessToken({ userId: user.id }),
    });
 
