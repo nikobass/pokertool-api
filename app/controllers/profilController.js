@@ -1,12 +1,15 @@
 const emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
+const { formatEmailValid } = require("../utils");
 
 const profilController = {
  // CREATION D'UN UTILISATEUR
  createUser: async (req, res) => {
+
   try {
    const data = req.body;
+   const email = req.body.email;
 
    //le pseudo existe déjà
    const userPseudo = await User.findOne({
@@ -18,65 +21,22 @@ const profilController = {
     return res.json({ error: "Ce pseudo existe déjà." });
    }
 
-   //l'email existe déjà
-   const userEmail = await User.findOne({
-    where: {
-     email: req.body.email,
-    },
-   });
-   if (userEmail) {
-    return res.json({ error: "Cet email existe déjà." });
-   }
-
-   //format d'email invalide
-   if (!emailValidator.validate(req.body.email)) {
-    return res.json({ error: "Cet email n'est pas valide." });
-   }
-
-   // l'e-mail et la confirmation ne correspondent pas
+     // l'e-mail et la confirmation ne correspondent pas
    if (req.body.email !== req.body.emailConfirm) {
     return res.json({ error: "La confirmation de l'email ne correspond pas." });
-   }
+   };
 
-   // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
+  
+  formatEmailValid(email)
 
-   const verifUserEmail = req.body.email.split("@")[0];
-   let isNumeric = false;
-   let isUpperCase = false;
-   let nbLetters = false;
-   let character = "";
-   let i = 0;
-
-   if (verifUserEmail.length >= 8) {
-    nbLetters = true;
-   }
-
-   while (i < verifUserEmail.length) {
-    character = verifUserEmail.charAt(i);
-
-    if (!isNaN(character * 1)) {
-     isNumeric = true;
-    } else {
-     if (character === character.toUpperCase()) {
-      isUpperCase = true;
-     }
-    }
-    i++;
-   }
-
-   if (!isNumeric || !isUpperCase || !nbLetters) {
-    return res.json({
-     error:
-      "Un email doit comprendre au minimum 8 caratères, une majuscule et un chiffre",
-    });
-   }
+ 
 
    // le mdp et la confirmation ne correspondent pas
    if (req.body.password !== req.body.passwordConfirm) {
     return res.json({
      error: "La confirmation du mot de passe ne correspond pas.",
     });
-   }
+   };
 
    // cryptage du password
    const salt = await bcrypt.genSalt(10);
@@ -86,8 +46,8 @@ const profilController = {
    const user = await User.create(data);
    console.log("USER créé avec succés !!!!");
    res.status(201).json(user);
+
   } catch (error) {
-   //console.trace(error);
    res
     .status(500)
     .json({ error: `Server error, please contact an administrator` });
@@ -133,6 +93,56 @@ const profilController = {
   } catch (err) {
     console.trace(err);
     res.status(500).send(err);
+  }
+},
+
+  // MISE A JOUR DU PROFIL
+  updateProfil: async (req, res, next) => {
+  try {
+
+      const id = parseInt(request.params.userId, 10);
+      if (isNaN(id)) {
+          return next();
+      }
+
+      const user = await User.findByPk(id);
+      if (!user) {
+          return res.status(500).json({ error: `l'utilisateur ${Id} n'a pas été trouvé !` });
+      }
+
+      const data = request.body;
+      const errors = [];
+
+      // On vérifie les différentes contraintes
+      if (typeof data.content !== 'undefined') {
+          if (data.content === '') {
+              errors.push(`content can't be empty`);
+          } else if (data.content.length < 3) {
+              errors.push(`content must have at least 3 caracters`);
+          }
+      }
+
+      if (data.position) {
+          data.position = parseInt(data.position, 10);
+          if (isNaN(data.position)) {
+              errors.push(`position must be a number`);
+          }
+      }
+
+      if (errors.length > 0) {
+          return response.status(400).json({ errors });
+      }
+
+      //On assaini les valeurs texte
+      data.content = sanitizeHtml(data.content);
+
+      const cardSaved = await card.update(data);
+
+      response.json(cardSaved);
+
+  } catch (error) {
+      console.trace(error);
+      response.status(500).json({ error: `Server error, please contact an administrator` });
   }
 },
 

@@ -33,7 +33,7 @@ router.get('/profil/:userId', profilController.getProfil);
 // delete
 router.delete('/profil/:userId', profilController.deleteProfil);
 // update
-//router.patch('/profil/:userId', profilController.updateProfil);
+router.patch('/profil/:userId', profilController.updateProfil);
 
 // TOURNAMENT
 // tournaments' datas
