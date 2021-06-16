@@ -119,27 +119,22 @@ const profilController = {
   }
  },
 
-// RECUPERATION DU PROFIL
-//  quizzPage: async (req, res) => {
-//   try {
-//     const quizId = parseInt(req.params.id);
-//     const quiz = await Quiz.findByPk(quizId,{
-//       include: [
-//         { association: 'author'},
-//         { association: 'questions', include: ['answers', 'level']},
-//         { association: 'tags'}
-//       ]
-//     });
-//     if (req.session.user) {
-//       res.render('play_quiz', {quiz});
-//     } else {
-//       res.render('quiz', {quiz});
-//     }
-//   } catch (err) {
-//     console.trace(err);
-//     res.status(500).send(err);
-//   }
-// },
+  // RECUPERATION DU PROFIL
+  getProfil: async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const user = await User.findByPk(userId);
+    
+    if (user) {
+      res.json(user)
+    } else {
+      res.status(500).json({ error: `l'utilisateur ${userId} n'a pas été trouvé !` });
+    }
+  } catch (err) {
+    console.trace(err);
+    res.status(500).send(err);
+  }
+},
 
 };
 
