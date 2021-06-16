@@ -177,7 +177,7 @@ const profilController = {
         return res.json({ error: "Ce pseudo existe déjà." });
       }
 
-    //l'email existe déjà HORMIS LE SEIN
+    //l'email existe déjà
     const userEmail = await User.findOne({
       where: {
         email: data.email,
@@ -193,38 +193,40 @@ const profilController = {
         return res.json ({error : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
         }
 
-    // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
-    const verifUserPwd = data.password;
-    let isNumeric = false;
-    let isUpperCase = false;
-    let nbLetters = false;
-    let character = "";
-    let i = 0;
+    if (data.password) {
+      // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
+      const verifUserPwd = data.password;
+      let isNumeric = false;
+      let isUpperCase = false;
+      let nbLetters = false;
+      let character = "";
+      let i = 0;
 
-    // On vérifie la longueur du pwd
-    if (verifUserPwd.length >= 8) {
-        nbLetters = true;
-    }
+      // On vérifie la longueur du pwd
+      if (verifUserPwd.length >= 8) {
+          nbLetters = true;
+      }
 
-    // On vérifie la présence d'une majuscule et d'un chiffre
-    while (i < verifUserPwd.length) {
-        character = verifUserPwd.charAt(i);
+      // On vérifie la présence d'une majuscule et d'un chiffre
+      while (i < verifUserPwd.length) {
+          character = verifUserPwd.charAt(i);
 
-        // est-ce un nombre ?
-        if (!isNaN(character * 1)) {
-            isNumeric = true;
-        // est-ce une majuscule
-        } else {
-            if (character === character.toUpperCase()) {
-                isUpperCase = true;
-            }
-        }
-        i++;
-    }
+          // est-ce un nombre ?
+          if (!isNaN(character * 1)) {
+              isNumeric = true;
+          // est-ce une majuscule
+          } else {
+              if (character === character.toUpperCase()) {
+                  isUpperCase = true;
+              }
+          }
+          i++;
+      }
 
-    if (!isNumeric || !isUpperCase || !nbLetters) {
-      return res.json ({ error : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
-    }
+      if (!isNumeric || !isUpperCase || !nbLetters) {
+        return res.json ({ error : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
+      }
+    };
 
     //On assaini les valeurs texte
     data.user_name = sanitizeHtml(data.user_name);
