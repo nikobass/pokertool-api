@@ -21,15 +21,15 @@ router.post('/test', auth, jwtController.test);
 // Données d'authentification du user
 router.post('/signin', authController.authUser);
 // reset password
-//router.get('/resetPassword/:token', authController.getResetPassword);
+//router.get('/resetPassword/:email', authController.getResetPassword);
 // modification du TOKEN
-//router.patch('/resetPassword/:token', authController.updateResetPassword);
+//router.patch('/resetPassword/:email', authController.updateResetPassword);
 
 // PROFIL
 // create user
 router.post('/signup', profilController.createUser);
 // ==> user's profil
-//router.get('/profil/:userId', profilController.getProfil);
+router.get('/profil/:userId', profilController.getProfil);
 // delete
 router.delete('/profil/:userId', profilController.deleteProfil);
 // update
