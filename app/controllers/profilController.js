@@ -16,7 +16,7 @@ const profilController = {
    //le pseudo existe déjà
    const userPseudo = await User.findOne({
     where: {
-     user_name: req.body.user_name,
+     user_name: req.body.nickname,
     },
    });
    if (userPseudo) {
@@ -163,7 +163,7 @@ const profilController = {
       }
 
       // On vérifie le pseudo renseigné
-      if (typeof data.user_name !== 'undefined') {
+      if (typeof data.nickname !== 'undefined') {
           if (data.nickname === '') {
               return res.json({error: `le speudo doit être renseigné`});
           }
@@ -172,7 +172,7 @@ const profilController = {
       //le pseudo existe déjà // A FACTORISER
       const userPseudo = await User.findOne({
         where: {
-        user_name: data.user_name,
+        user_name: data.nickname,
         },
       });
       if (userPseudo) {
