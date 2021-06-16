@@ -1,6 +1,5 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
-const sanitizeHtml = require('sanitize-html');
 
 const { generateAccessToken } = require("../utils");
 
