@@ -149,7 +149,7 @@ const profilController = {
   try {
     const data = req.body;
     const errors = [];
-
+    console.log(data)
     // on vérifie l'id de la route  
     const id = parseInt(req.params.userId, 10);
       if (isNaN(id)) {
@@ -163,7 +163,7 @@ const profilController = {
       }
 
       // On vérifie le pseudo renseigné
-      if (typeof data.nickname !== 'undefined') {
+      if (typeof data.user_name !== 'undefined') {
           if (data.nickname === '') {
               return res.json({error: `le speudo doit être renseigné`});
           }
