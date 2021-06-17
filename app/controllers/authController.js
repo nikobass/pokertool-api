@@ -23,13 +23,13 @@ const authController = {
    });
    // utilisateur non trouvé 
    if (!user) {
-    return res.json({error: `email non invalide`});
+    return res.status(401).json({ message: "User does not exist" });
    }
 
    // Si on a un utilisateur, on teste si le mot de passe est valide
    const validPwd = await bcrypt.compare(data.password, user.password);
    if (!validPwd) {
-    return res.json({error: `Ce n'est pas le bon mot de passe`});
+    return res.status(401).json({message: `Ce n'est pas le bon mot de passe`});
    }
 
    // si tout va bien, on renvoie le pseudo, email et on génére le TOKEN...
