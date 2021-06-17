@@ -7,7 +7,7 @@ const tournamentController = {
   try {
    const userId = parseInt(req.params.userId);
    if (!userId) {
-    return res.json({ error: `Id ${userId} invalide !` });
+    return res.status(401).json({ message: `Id ${userId} invalide !` });
   } 
 
    const tournaments = await Tournament.findAll({
@@ -18,13 +18,13 @@ const tournamentController = {
 
    if (!tournaments) {
     res
-     .status(500)
-     .json({ error: `pas de tournois trouvés pour l'utilisateur ${userId}` });
+     .status(401)
+     .json({ message: `pas de tournois trouvés pour l'utilisateur ${userId}` });
    } else {
     res.json(tournaments);
    }
   } catch (err) {
-   res.status(500).send(err);
+    res.status(500).json({ message: `Server error, please contact an administrator` });
   }
  },
 
@@ -33,18 +33,18 @@ const tournamentController = {
     try {
       const tournamentId = parseInt(req.params.id);
       if (isNaN(tournamentId)) {
-        return res.status(500).json({ error: `Id manquant !` });
+        return res.status(401).json({ message: `Id manquant !` });
        }
 
       const tournament = await Tournament.findByPk(tournamentId);
       
       if (tournament) {
-        res.json(tournament)
+        res.status(200).json(tournament)
       } else {
-        res.status(500).json({ error: `Le tournoi ${tournamentId} n'a pas été trouvé !` });
+        res.status(401).json({ message: `Le tournoi ${tournamentId} n'a pas été trouvé !` });
       }
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).json({ message: `Server error, please contact an administrator` });
     }
   },
 
@@ -54,23 +54,23 @@ const tournamentController = {
      const id = parseInt(req.params.id, 10);
   
      if (isNaN(id)) {
-      return res.status(500).json({ error: `Id manquant !` });
+      return res.status(401).json({ message: `Id manquant !` });
      }
 
      // recherche du tournoi en BDD
      const tournament = await Tournament.findByPk(id);
      if (!tournament) {
-      return res.status(500).json({ error: `Le tournoi ${id} n'a pas été trouvé !` });
+      return res.status(401).json({ message: `Le tournoi ${id} n'a pas été trouvé !` });
      }
      // Tournpoi trouvé = tournoi supprime
      await tournament.destroy();
      console.log(`TOURNAMENT `,id ,` supprimé`);
-     res.status(204).json();
+     res.status(204).json({ message: `Tournoi supprimé` });
   
     } catch (error) {
      res
       .status(500)
-      .json({ error: `Server error, please contact an administrator` });
+      .json({ message: `Server error, please contact an administrator` });
     }
    },
 

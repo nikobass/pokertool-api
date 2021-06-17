@@ -21,7 +21,7 @@ const profilController = {
     },
    });
    if (userPseudo) {
-    return res.json({ error: "Ce pseudo existe déjà." });
+    return res.status(401).json({ message: "Ce pseudo existe déjà." });
    }
 
     //l'email existe déjà
@@ -31,12 +31,12 @@ const profilController = {
       },
     });
     if (userEmail) {
-        return res.json({ error : "mail a déjà été utilisé sur notre site."})
+        return res.status(401).json({ message : "mail a déjà été utilisé sur notre site."})
     }
   
     //format d'email invalide
     if (!emailValidator.validate(email)) {
-        return res.json ({error : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
+        return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
         }
 
     // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
@@ -69,19 +69,17 @@ const profilController = {
     }
 
     if (!isNumeric || !isUpperCase || !nbLetters) {
-        return res.json ({ error : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
+        return res.status(401).json ({ message : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
     }
  
      // l'e-mail et la confirmation ne correspondent pas
    if (req.body.email !== req.body.emailConfirm) {
-    return res.json({ error: "La confirmation de l'email ne correspond pas." });
+    return res.status(401).json({ message: "La confirmation de l'email ne correspond pas." });
    };
 
    // le mdp et la confirmation ne correspondent pas
    if (req.body.password !== req.body.passwordConfirm) {
-    return res.json({
-     error: "La confirmation du mot de passe ne correspond pas.",
-    });
+    return res.status(401).json({ message: "La confirmation du mot de passe ne correspond pas." });
    };
 
    // cryptage du password
@@ -96,7 +94,7 @@ const profilController = {
   } catch (error) {
    res
     .status(500)
-    .json({ error: `Server error, please contact an administrator` });
+    .json({ message: `Server error, please contact an administrator` });
   }
  },
 
@@ -106,7 +104,7 @@ const profilController = {
    const id = parseInt(req.params.userId, 10);
 
    if (isNaN(id)) {
-      return res.status(500).json({ error: `Id manquant !` });
+      return res.status(500).json({ message: `Id manquant !` });
      }
 
    // recherche de l'utilisateur en BDD
@@ -117,12 +115,12 @@ const profilController = {
    // Utilisateur trouvé = utilisateur supprimeé
    await user.destroy();
    console.log(`USER `,id ,` supprimé`);
-   res.status(204).json();
+   res.status(200).json({ message: `Utilisateur supprimé !` });
 
   } catch (error) {
    res
     .status(500)
-    .json({ error: `Server error, please contact an administrator` });
+    .json({ message: `Server error, please contact an administrator` });
   }
  },
 
@@ -132,7 +130,7 @@ const profilController = {
     const userId = parseInt(req.params.userId);
 
     if (isNaN(userId)) {
-      return res.status(500).json({ error: `Id manquant !` });
+      return res.status(401).json({ message: `Id manquant !` });
     }
 
     const user = await User.findByPk(userId);
@@ -140,10 +138,10 @@ const profilController = {
     if (user) {
       res.json(user)
     } else {
-      res.status(500).json({ error: `l'utilisateur ${userId} n'a pas été trouvé !` });
+      res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` });
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).json({ message: `Server error, please contact an administrator` });
   }
 },
 
@@ -155,19 +153,19 @@ const profilController = {
     // on vérifie l'id de la route  
     const id = parseInt(req.params.userId, 10);
     if (isNaN(id)) {
-      return res.json({error: "Id manquant"});
+      return res.status(401).json({error: "Id manquant"});
     }
 
       // on vérirfie que l'utilisateur est en BDD
       const user = await User.findByPk(id);
       if (!user) {
-          return res.status(500).json({ error: `l'utilisateur ${Id} n'a pas été trouvé !` });
+          return res.status(401).json({ message: `l'utilisateur ${Id} n'a pas été trouvé !` });
       }
 
       // On vérifie le pseudo renseigné
       if (typeof data.user_name !== 'undefined') {
           if (data.user_name === '') {
-              return res.json({error: `le speudo doit être renseigné`});
+              return res.status(401).json({message: `le speudo doit être renseigné`});
           }
       }
 
@@ -180,7 +178,7 @@ const profilController = {
       });
 
       if (userPseudo) {
-        return res.json({ error: "Ce pseudo existe déjà." });
+        return res.status(401).json({ message: "Ce pseudo existe déjà." });
       }
 
     //l'email existe déjà
@@ -192,12 +190,12 @@ const profilController = {
     });
 
     if (userEmail) {
-        return res.json({ error : "mail a déjà été utilisé sur notre site."})
+        return res.status(401).json({ message : "mail a déjà été utilisé sur notre site."})
     }
 
     //format d'email invalide
     if (!emailValidator.validate(data.email)) {
-        return res.json ({error : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
+        return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
         }
     
     // Vérification du PWD : le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
@@ -248,7 +246,7 @@ const profilController = {
     res.json(userSaved);
 
     } catch (error) {
-      res.status(500).json({ error: `Server error, please contact an administrator` });
+      res.status(500).json({ message: `Server error, please contact an administrator` });
     }
   },
 };
