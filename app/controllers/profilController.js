@@ -230,7 +230,7 @@ const profilController = {
       }
 
       if (!isNumeric || !isUpperCase || !nbLetters) {
-        return res.status(401).json ({ message : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
+        return res.status(401).json({ message: "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
       }
     };
 
