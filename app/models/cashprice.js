@@ -9,8 +9,7 @@ Cashprice.init({
         allowNull: false},
     amount: {
         type: DataTypes.INTEGER,
-        allowNull: false},
-    tournament_id: DataTypes.INTEGER
+        allowNull: false}
 },{
     sequelize,
     tableName: 'cashprice',

@@ -12,8 +12,7 @@ Distribution.init({
         allowNull: false},
     value: {
         type: DataTypes.INTEGER,
-        allowNull: false},
-    tournament_id: DataTypes.INTEGER
+        allowNull: false}
 },{
     sequelize,
     tableName: 'distribution',

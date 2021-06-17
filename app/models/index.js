@@ -7,43 +7,43 @@ const User = require('./user');
 
 // Gestion des associations entre les différents modèles
 User.hasMany(Chip, {
-    as: 'chips',
-    foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    as: 'chips'
 });
 
 Chip.belongsTo(User, {
-    as: 'user',
-    foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    as: 'user'
 });
 
 User.hasMany(Tournament, {
-    as: 'tournaments',
-    foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    as: 'tournaments'
 });
 
 Tournament.belongsTo(User, {
-    as: 'user',
-    foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    as: 'user'
 });
 
 Tournament.hasMany(Distribution, {
-    as: 'distributions',
-    foreignKey: 'tournament_id'
+    foreignKey: 'tournament_id',
+    as: 'distributions'
 });
 
 Distribution.belongsTo(Tournament, {
-    as: 'tournament',
-    foreignKey: 'tournament_id'
+    foreignKey: 'tournament_id',
+    as: 'tournament'
 });
 
 Tournament.hasMany(Cashprice, {
-    as: 'cashprices',
-    foreignKey:'tournament_id'
+    foreignKey:'tournament_id',
+    as: 'cashprices'
 });
 
 Cashprice.belongsTo(Tournament, {
-    as:'tournament',
-    foreignKey: 'tournament_id'
+    foreignKey: 'tournament_id',
+    as:'tournament'
 });
 
 Tournament.belongsToMany(Structure, {

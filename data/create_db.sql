@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS "tournament" (
     "starting_stack" INTEGER NOT NULL,
     "buy_in" INTEGER NOT NULL,
     "cash_price" INTEGER NOT NULL,
-    "status" VARCHAR(20) NOT NULL DEFAULT 'prévu',
+    "status" VARCHAR(128) NOT NULL,
     "comments" TEXT,
-    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id" INTEGER NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS "chip" (
     "quantity" INTEGER NOT NULL,
     "color" TEXT NOT NULL,
     "value" INTEGER NOT NULL,
-    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id" INTEGER NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS "distribution" (
     "quantity" INTEGER NOT NULL,
     "color" VARCHAR(7) NOT NULL,
     "value" INTEGER NOT NULL,
-    "tournament_id" INTEGER NOT NULL REFERENCES "tournament" ("id") ON DELETE CASCADE,
+    "tournament_id" INTEGER NOT NULL REFERENCES "tournament"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -76,14 +76,14 @@ CREATE TABLE IF NOT EXISTS "cashprice" (
     "id" serial PRIMARY KEY,
     "position" INTEGER NOT NULL,
     "amount" INTEGER NOT NULL,
-    "tournament_id" INTEGER NOT NULL REFERENCES "tournament" ("id") ON DELETE CASCADE,
+    "tournament_id" INTEGER NOT NULL REFERENCES "tournament"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
 
 CREATE TABLE "tournament_has_structure"(
-    "tournament_id" INTEGER NOT NULL REFERENCES "tournament"("id") ON DELETE CASCADE,
-    "structure_id" INTEGER NOT NULL REFERENCES "structure"("id") ON DELETE CASCADE,
+    "tournament_id" INTEGER REFERENCES "tournament"("id") ON DELETE CASCADE,
+    "structure_id" INTEGER REFERENCES "structure"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY("tournament_id", "structure_id")
 );

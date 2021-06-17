@@ -75,105 +75,100 @@ const tournamentController = {
    },
 
  // CREATION D'UN TOURNOI
- createTournament: async (req, res) => {
+  createTournament: async (req, res) => {
 
-  try {
-   const data = req.body;
+    try {
+      const data = req.body;
 
-   // vérification de la présente d'un ID user
-   const userId = parseInt(req.params.userId, 10);
-     if (isNaN(userId)) {
-    return res.status(500).json({ error: `Id manquant !` });
-   }
+      // vérification de la présente d'un ID user
+      const userId = parseInt(req.params.userId, 10);
+        if (isNaN(userId)) {
+        return res.status(401).json({ message: `Id manquant !` });
+      }
 
-   //le pseudo existe déjà
-   const userPseudo = await User.findOne({
-    where: {
-     user_name: req.body.user_name,
-    },
-   });
-   if (userPseudo) {
-    return res.json({ error: "Ce pseudo existe déjà." });
-   }
+      console.log(data, userId);
+      // vérification des données obligatoires
+        if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
 
-    //l'email existe déjà
-    const userEmail = await User.findOne({
-      where: {
-      email: email,
-      },
-    });
-    if (userEmail) {
-        return res.json({ error : "mail a déjà été utilisé sur notre site."})
-    }
-  
-    //format d'email invalide
-    if (!emailValidator.validate(email)) {
-        return res.json ({error : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
-        }
+        data.nb_players = parseInt(data.nb_players, 10);
+        data.speed = parseInt(data.speed, 10);
+        data.starting_stack = parseInt(data.starting_stack, 10);
+        data.buy_in = parseInt(data.buy_in, 10);
+        data.cash_price = parseInt(data.cash_price, 10);
+      
+      console.log("APRES", data, userId)
+      //création du tournoi
+      const newTournament = new Tournament({
+        name: data.name,
+        date: data.date,
+        location: data.location,
+        nb_players: data.nb_players,
+        speed: data.speed,
+        starting_stack: data.starting_stack,
+        buy_in: data.buy_in,
+        cash_price: data.cash_price,
+        status: "prévu",
+        comments: data.comments,
+         user_id: userId
+      });
+      console.log("TOURNOI créé !!!!", newTournament);
+      //const tournament = await Tournament.create(data);
+      await newTournament.save();
+      console.log("TOURNOI enregistré !!!!");
+      res.status(201).json(newTournament);
 
-    // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
-    const verifUserPwd = req.body.password;
-    let isNumeric = false;
-    let isUpperCase = false;
-    let nbLetters = false;
-    let character = "";
-    let i = 0;
-
-        // On vérifie la longueur du mail
-    if (verifUserPwd.length >= 8) {
-        nbLetters = true;
-    }
-
-    // On vérifie la présence d'une majuscule et d'un chiffre
-    while (i < verifUserPwd.length) {
-        character = verifUserPwd.charAt(i);
-
-        // est-ce un nombre ?
-        if (!isNaN(character * 1)) {
-            isNumeric = true;
-            // est-ce une majuscule
-        } else {
-            if (character === character.toUpperCase()) {
-                isUpperCase = true;
-            }
-        }
-        i++;
+    } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Server error, please conta'ct' an administrator` });
     }
 
-    if (!isNumeric || !isUpperCase || !nbLetters) {
-        return res.json ({ error : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
+  },
+
+  // MODIFICATION D'UN TOURNOI
+  updateTournament: async (req, res) => {
+
+    try {
+      const data = req.body;
+      
+      // vérification de la présente d'un ID tournament
+      const tournamentId = parseInt(req.params.id, 10);
+        if (isNaN(tournamentId)) {
+        return res.status(401).json({ message: `Id manquant !` });
+      }
+
+      // on vérirfie que le tournoi est en BDD
+      const tournament = await Tournament.findByPk(tournamentId);
+
+      if (!tournament) {
+          return res.status(401).json({ message: `le tournoi ${tournamentId} n'a pas été trouvé !` });
+      }
+
+      console.log(data)
+      // vérification des données obligatoires
+        if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price || !data.status) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+
+        data.nb_players = parseInt(data.nb_players, 10);
+        data.speed = parseInt(data.speed, 10);
+        data.starting_stack = parseInt(data.starting_stack, 10);
+        data.buy_in = parseInt(data.buy_in, 10);
+        data.cash_price = parseInt(data.cash_price, 10);
+      
+      console.log(data)
+      // création du tournoi
+      const tournamentUpdated = await tournament.update(data);
+
+      console.log("TOURNOI modifié avec succés !!!!");
+      res.status(201).json(tournamentUpdated);
+
+    } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Server error, please contact an administrator` });
     }
- 
-     // l'e-mail et la confirmation ne correspondent pas
-   if (req.body.email !== req.body.emailConfirm) {
-    return res.json({ error: "La confirmation de l'email ne correspond pas." });
-   };
 
-   // le mdp et la confirmation ne correspondent pas
-   if (req.body.password !== req.body.passwordConfirm) {
-    return res.json({
-     error: "La confirmation du mot de passe ne correspond pas.",
-    });
-   };
-
-   // cryptage du password
-   const salt = await bcrypt.genSalt(10);
-   data.password = await bcrypt.hash(req.body.password, salt);
-
-   // création de l'utilisateur
-   const user = await User.create(data);
-   console.log("USER créé avec succés !!!!");
-   res.status(201).json(user);
-
-  } catch (error) {
-   res
-    .status(500)
-    .json({ error: `Server error, please contact an administrator` });
-  }
- },
+  },
 
 };
-
-
 
 module.exports = tournamentController;
