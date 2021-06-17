@@ -4,10 +4,10 @@ const { User } = require("../models");
 const sanitizeHtml = require('sanitize-html');
 const { BcryptData } = require('../utils');
 const { Op } = require('sequelize');
-//const { formatEmailValid } = require("../middleware/email");
 
 const profilController = {
- // CREATION D'UN UTILISATEUR
+ 
+  // CREATION D'UN UTILISATEUR
  createUser: async (req, res) => {
 
   try {
@@ -106,8 +106,9 @@ const profilController = {
    const id = parseInt(req.params.userId, 10);
 
    if (isNaN(id)) {
-    return next();
-   }
+      return res.status(500).json({ error: `Id manquant !` });
+     }
+
    // recherche de l'utilisateur en BDD
    const user = await User.findByPk(id);
    if (!user) {
@@ -129,6 +130,11 @@ const profilController = {
   getProfil: async (req, res) => {
   try {
     const userId = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+      return res.status(500).json({ error: `Id manquant !` });
+    }
+
     const user = await User.findByPk(userId);
     
     if (user) {
@@ -148,9 +154,9 @@ const profilController = {
 
     // on vérifie l'id de la route  
     const id = parseInt(req.params.userId, 10);
-      if (isNaN(id)) {
-          return res.json({error: "pas di'edentifiant dans la route"});
-      }
+    if (isNaN(id)) {
+      return res.json({error: "Id manquant"});
+    }
 
       // on vérirfie que l'utilisateur est en BDD
       const user = await User.findByPk(id);
@@ -184,6 +190,7 @@ const profilController = {
         id: {[Op.ne]: id},
       },
     });
+
     if (userEmail) {
         return res.json({ error : "mail a déjà été utilisé sur notre site."})
     }
@@ -192,9 +199,10 @@ const profilController = {
     if (!emailValidator.validate(data.email)) {
         return res.json ({error : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
         }
-
+    
+    // Vérification du PWD : le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
     if (data.password) {
-      // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
+      
       const verifUserPwd = data.password;
       let isNumeric = false;
       let isUpperCase = false;
