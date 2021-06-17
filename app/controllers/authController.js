@@ -12,7 +12,7 @@ const authController = {
 
     // vérification des données
     if (!data.email || !data.password) {
-      return res.json({error: `email ou mot de passe non renseigné`});
+      return res.status(401).json({message: `email ou mot de passe non renseigné !`});
     }
    
     // on récupére l'utilisateur qui possède l'email
@@ -23,7 +23,7 @@ const authController = {
    });
    // utilisateur non trouvé 
    if (!user) {
-    return res.status(401).json({ message: "User does not exist" });
+    return res.status(401).json({ message: "Utilisateur non trouvé !" });
    }
 
    // Si on a un utilisateur, on teste si le mot de passe est valide
@@ -42,7 +42,7 @@ const authController = {
 
   } catch (err) {
    //console.trace(err);
-   res.status(500).json({error: 'REQUETE INVALIDE'});
+   res.status(500).json({message: 'REQUETE INVALIDE'});
   }
  },
 
@@ -51,6 +51,11 @@ const authController = {
 
   try {
    const email = req.params.email;
+    
+   // vérification email dans la route
+    if (!email) {
+      return res.status(401).json({message: `email non renseigné dans la route`})
+    }
 
    //Vérification du user
    const user = await User.findOne({
@@ -59,7 +64,7 @@ const authController = {
     },
    });
    if (!user) {
-    return res.json({ error: `Aucun utilisateur trouvé avec le mail : ${email}` });
+    return res.status(401).json({ message: `Aucun utilisateur trouvé avec le mail : ${email}` });
    }
 
    // cryptage du key_password
@@ -74,7 +79,7 @@ const authController = {
   } catch (error) {
    res
     .status(500)
-    .json({ error: `Server error, please contact an administrator` });
+    .json({ messaege: `Server error, please contact an administrator` });
   }
  },
 
@@ -84,6 +89,11 @@ deleteResetPassword: async (req, res) => {
   try {
    const email = req.params.email;
 
+    // vérification email dans la route
+    if (!email) {
+      return res.status(401).json({message: `email non renseigné dans la route`})
+    }
+
    //Vérification du user
    const user = await User.findOne({
     where: {
@@ -91,7 +101,7 @@ deleteResetPassword: async (req, res) => {
     },
    });
    if (!user) {
-    return res.json({ error: `Aucun utilisateur trouvé avec le mail : ${email}` });
+    return res.status(401).json({ message: `Aucun utilisateur trouvé avec le mail : ${email}` });
    }
 
    user.key_password='';
@@ -104,7 +114,7 @@ deleteResetPassword: async (req, res) => {
   } catch (error) {
    res
     .status(500)
-    .json({ error: `Server error, please contact an administrator` });
+    .json({ message: `Server error, please contact an administrator` });
   }
  },
 
