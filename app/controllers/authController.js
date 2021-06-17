@@ -23,13 +23,13 @@ const authController = {
    });
    // utilisateur non trouvé 
    if (!user) {
-    return res.status(401).json({ message: "Utilisateur non trouvé !" });
+    return res.status(401).json({ message: "Mauvaise combinaison email/password" });
    }
 
    // Si on a un utilisateur, on teste si le mot de passe est valide
    const validPwd = await bcrypt.compare(data.password, user.password);
    if (!validPwd) {
-    return res.status(401).json({message: `Ce n'est pas le bon mot de passe`});
+    return res.status(401).json({message: `Mauvaise combinaison email/password`});
    }
 
    // si tout va bien, on renvoie le pseudo, email et on génére le TOKEN...
