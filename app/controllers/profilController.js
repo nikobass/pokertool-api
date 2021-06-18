@@ -12,7 +12,11 @@ const profilController = {
 
   try {
    const data = req.body;
-   const email = req.body.email;
+    data.user_name = sanitizeHtml(data.user_name);
+    data.email = sanitizeHtml(data.email);
+    data.password = sanitizeHtml(data.password);
+
+   const email = data.email;
 
    //le pseudo existe déjà
    const userPseudo = await User.findOne({
@@ -84,7 +88,7 @@ const profilController = {
    // création de l'utilisateur
    const user = await User.create(data);
    console.log("USER créé avec succés !!!!");
-   res.status(201).json(user);
+   res.status(200).json(user);
 
   } catch (error) {
    res
@@ -95,13 +99,11 @@ const profilController = {
 
  //SUPPRESSION D'UN UTILISATEUR
  deleteProfil: async (req, res) => {
+  console.log('passe');
   try {
    const id = parseInt(req.params.userId, 10);
 
-   if (isNaN(id)) {
-      return res.status(500).json({ message: `Id manquant !` });
-     }
-
+   console.log('passe');
    // recherche de l'utilisateur en BDD
    const user = await User.findByPk(id);
    if (!user) {
@@ -144,6 +146,9 @@ const profilController = {
   updateProfil: async (req, res, next) => {
   try {
     const data = req.body;
+    data.user_name = sanitizeHtml(data.user_name);
+    data.email = sanitizeHtml(data.email);
+    data.password = sanitizeHtml(data.password);
 
     // on vérifie l'id de la route  
     const id = parseInt(req.params.userId, 10);
@@ -229,16 +234,13 @@ const profilController = {
       }
     };
 
-    //On assaini les valeurs texte
-    data.user_name = sanitizeHtml(data.user_name);
-
     //On crypte le PWD
     data.password =  BcryptData(data.password);
 
     // update
     const userSaved = await user.update(data);
 
-    res.json(userSaved);
+    res.status(200).json(userSaved);
 
     } catch (error) {
       res.status(500).json({ message: `Server error, please contact an administrator` });

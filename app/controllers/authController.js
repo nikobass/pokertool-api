@@ -10,6 +10,10 @@ const authController = {
   try {
     const data = req.body;
 
+    data.user_name = sanitizeHtml(data.user_name);
+    data.email = sanitizeHtml(data.email);
+    data.password = sanitizeHtml(data.password);
+
     // vérification des données
     if (!data.email || !data.password) {
       return res.status(401).json({message: `email ou mot de passe non renseigné !`});
@@ -73,7 +77,6 @@ const authController = {
 
    // création du key_password
    const addKeypassword = await user.update(user);
-   console.log("Key password créé avec succés !!!!");
    res.status(201).json(addKeypassword);
 
   } catch (error) {
@@ -83,7 +86,7 @@ const authController = {
   }
  },
 
-// CREATION DU KEY_PASSWORD
+// SUPPRESSION DU KEY_PASSWORD
 deleteResetPassword: async (req, res) => {
 
   try {

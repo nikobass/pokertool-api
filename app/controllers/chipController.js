@@ -1,11 +1,9 @@
 const { Chip, User } = require("../models");
-const sanitizeHtml = require('sanitize-html');
-
 
 const chipController = {
  
- // RECUPERATION DU CHIP POUR UN USER
- getChip: async (req, res) => {
+ // RECUPERATION DES CHIPS POUR UN USER
+ getChips: async (req, res) => {
     try {
       // Recherche du USER
       const userId = parseInt(req.params.userId);
@@ -14,16 +12,78 @@ const chipController = {
         return res.status(401).json({ message: `L'utilisateur ${userId} n'a pas été trouvé !` });
       } 
 
-      // Recherche du CHIP
-      const chip = await Chip.findAll({where: {user_id: userId}});
-      if(chip) {
-          res.status(200).json(chip);
-      } else {
+      // Recherche des CHIPS
+      const chips = await Chip.findAll({where: {user_id: userId}});
+      console.log(chips);
+      if(chips.length > 0) {
+        res.status(200).json(chips);
+      } else{
         res.status(401).json({ message: `Pas de jetons trouvés pour l'utilisateur ${userId} !` });
       }
 
     } catch (err) {
       res.status(500).json({ message: `Server error, please contact an administrator` });
+    }
+  },
+
+  // CREATION / MODIFICATION DES CHIPS POUR UN USER
+  fillUserChips: async (req, res) => {
+
+    try {
+      const arrayData = req.body;
+
+      // Recherche du USER
+      const userId = parseInt(req.params.userId, 10);
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
+      };
+
+      // vérification des données obligatoires
+      for(const data of arrayData) {
+        if(!data.color || !data.value || !data.quantity) { 
+          return res
+            .status(401)
+            .json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });
+        }
+      };
+
+      // Recherche des CHIPS ET SUPPRESSION
+      const chips = await Chip.findAll({where: {user_id: userId}});
+      if(chips.length > 0) {
+         await Chip.destroy({
+           where: {user_id: userId}
+          });
+      };
+
+      // Création d'un CHIP
+      for(const data of arrayData) {
+        data.value = parseInt(data.value, 10);
+        data.quantity = parseInt(data.quantity, 10);
+
+        //création des CHIPS
+        const newChip = new Chip({
+          quantity: data.quantity,
+          color: data.color,
+          value: data.value,
+          user_id: userId
+        });
+
+        await newChip.save();
+        console.log("CHIP enregistrés !!!!");
+      }
+
+      // Réponse = CHIPS du USER dans la BDD
+      const chipsUser = await Chip.findAll({where: {user_id: userId}});
+      if(chipsUser.length > 0) {
+        res.status(200).json(chipsUser);
+
+      }else {
+        res.status(400).json({ message: `aucun jeton de créé !` });
+      }
+
+    } catch (error) {
+      res.status(500).json({ message: `Server error, please conta'ct' an administrator` });
     }
   },
 

@@ -29,7 +29,7 @@ router.post('/signup', profilController.createUser);
 // ==> user's profil
 router.get('/profil/:userId', profilController.getProfil);
 // delete
-router.delete('/profil/:userId', auth, profilController.deleteProfil);
+router.delete('/profil/:userId', profilController.deleteProfil);
 // update
 router.patch('/profil/:userId', profilController.updateProfil);
 
@@ -45,21 +45,19 @@ router.patch('/tournament/:id', tournamentController.updateTournament);
 // Supprimer un tournoi
 router.delete('/tournament/:id', tournamentController.deleteTournament);
 // Timer d'un tournoi
-//router.get('timer/:tournamentId', tournamentController.getTimerTournament);
+router.get('/timer/:id', tournamentController.getTimerTournament);
 
-// CHIP
+// CHIP  ====> penser à remettre la verif TOKEN ===> AUTH
 // user's chips
-router.get('/chip/:userId', chipController.getChip);
+router.get('/chip/:userId', chipController.getChips);
 // create user's chips
-//router.post('/chip/:userId', chipController.createChip);
-// update user's chips
-//router.patch('/chip/:userId', chipController.updateChip);chip
+router.post('/chip/:userId', chipController.fillUserChips);
 
-// DISTRIBUTOR
+// DISTRIBUTOR  ====> penser à remettre la verif TOKEN ===> AUTH
 // données distributor
-//router.get('/distributor/:tournamentId', distributionController.getDistributor);
+router.get('/distributor/:tournamentId', distributionController.getDistributor);
 // modification distributor
-//router.patch('/distributor/:tournamentId', distributionController.updateDistributor);
+router.post('/distributor/:tournamentId', distributionController.fillTournamentDistributor);
 
 // ERROR 404
 router.use(mainController.error404);
