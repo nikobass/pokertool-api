@@ -1,5 +1,4 @@
 const { Chip, User } = require("../models");
-<<<<<<< HEAD
 const sanitizeHtml = require('sanitize-html');
 
 
@@ -28,12 +27,6 @@ const chipController = {
     }
   },
 
-=======
-
-const chipController = {
- 
- 
->>>>>>> a31a49f94c9369d6075a89bd7c5c83059a937c3f
 };
 
 module.exports = chipController;
