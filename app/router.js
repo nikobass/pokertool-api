@@ -49,11 +49,11 @@ router.delete('/tournament/:id', tournamentController.deleteTournament);
 
 // CHIP
 // user's chips
-//router.get('/chip/:userId', chipController.getChip);
+router.get('/chip/:userId', chipController.getChip);
 // create user's chips
 //router.post('/chip/:userId', chipController.createChip);
 // update user's chips
-//router.patch('/chip/:userId', chipController.updateChip);
+//router.patch('/chip/:userId', chipController.updateChip);chip
 
 // DISTRIBUTOR
 // données distributor

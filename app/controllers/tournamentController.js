@@ -77,9 +77,9 @@ const tournamentController = {
     try {
       const data = req.body;
 
+      // Recherche du USER
       const userId = parseInt(req.params.userId, 10);
       const user = await User.findByPk(userId);
-
       if (!user) {
         return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
       }
@@ -120,7 +120,6 @@ const tournamentController = {
     }
   },
 
-
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 
@@ -132,7 +131,7 @@ const tournamentController = {
       const tournament = await Tournament.findByPk(id);
 
       if (!tournament) {
-          return res.status(401).json({ message: `le tournoi ${tournamentId} n'a pas été trouvé !` });
+          return res.status(401).json({ message: `le tournoi ${id} n'a pas été trouvé !` });
       }
 
       console.log("passe")
