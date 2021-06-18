@@ -77,6 +77,7 @@ const tournamentController = {
     try {
       const data = req.body;
 
+<<<<<<< HEAD
       // Recherche du USER
       const userId = parseInt(req.params.userId, 10);
       const user = await User.findByPk(userId);
@@ -87,6 +88,18 @@ const tournamentController = {
       // vérification des données obligatoires
         if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
 
+=======
+      const userId = parseInt(req.params.userId, 10);
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
+      }
+
+      // vérification des données obligatoires
+        if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+
+>>>>>>> a31a49f94c9369d6075a89bd7c5c83059a937c3f
         data.nb_players = parseInt(data.nb_players, 10);
         data.speed = parseInt(data.speed, 10);
         data.starting_stack = parseInt(data.starting_stack, 10);
@@ -119,6 +132,7 @@ const tournamentController = {
         .json({ message: `Server error, please conta'ct' an administrator` });
     }
   },
+<<<<<<< HEAD
 
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
@@ -130,12 +144,29 @@ const tournamentController = {
       // on vérirfie que le tournoi est en BDD
       const tournament = await Tournament.findByPk(id);
 
+=======
+
+  
+  // MODIFICATION D'UN TOURNOI
+  updateTournament: async (req, res) => {
+
+    try {
+      const data = req.body;
+      const id = parseInt(req.params.id, 10);
+
+      // on vérirfie que le tournoi est en BDD
+      const tournament = await Tournament.findByPk(id);
+
+>>>>>>> a31a49f94c9369d6075a89bd7c5c83059a937c3f
       if (!tournament) {
           return res.status(401).json({ message: `le tournoi ${id} n'a pas été trouvé !` });
       }
 
+<<<<<<< HEAD
       console.log("passe")
 
+=======
+>>>>>>> a31a49f94c9369d6075a89bd7c5c83059a937c3f
       // vérification des données obligatoires
         if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price || !data.status) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
 
@@ -144,6 +175,7 @@ const tournamentController = {
         data.starting_stack = parseInt(data.starting_stack, 10);
         data.buy_in = parseInt(data.buy_in, 10);
         data.cash_price = parseInt(data.cash_price, 10);
+<<<<<<< HEAD
       
 
       // création du tournoi
@@ -159,6 +191,22 @@ const tournamentController = {
     }
   },
 
+=======
+
+      // Modification du tournoi
+      const tournamentUpdated = await tournament.update(data);
+
+      console.log("TOURNOI modifié avec succés !!!!");
+      res.status(201).json(tournamentUpdated);
+
+    } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Server error, please contact an administrator` });
+    }
+  },
+
+>>>>>>> a31a49f94c9369d6075a89bd7c5c83059a937c3f
 };
 
 module.exports = tournamentController;
