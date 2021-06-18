@@ -31,8 +31,7 @@ Tournament.init({
     status: {
         type: DataTypes.TEXT,
         allowNull: false},
-    comments: DataTypes.TEXT,
-    user_id: DataTypes.INTEGER
+    comments: DataTypes.TEXT
 },{
     sequelize,
     tableName: 'tournament',

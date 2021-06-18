@@ -12,8 +12,7 @@ Chip.init({
         allowNull: false},
     value: {
         type: DataTypes.INTEGER,
-        allowNull: false},
-    user_id: DataTypes.INTEGER
+        allowNull: false}
 },{
     sequelize,
     tableName: 'chip',

@@ -24,6 +24,11 @@ const profilController = {
     return res.status(401).json({ message: "Ce pseudo existe déjà." });
    }
 
+   // Vérif de la taille du pseudo
+   if (data.user_name.length > 20 || data.user_name.length < 2) {
+    return res.status(401).json({ message: "Le pseudo doit contenir entre 2 et 20 caractères !" });
+   }
+
     //l'email existe déjà
     const userEmail = await User.findOne({
       where: {
@@ -33,7 +38,7 @@ const profilController = {
     if (userEmail) {
         return res.status(401).json({ message : "mail a déjà été utilisé sur notre site."})
     }
-  
+
     //format d'email invalide
     if (!emailValidator.validate(email)) {
         return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
@@ -71,16 +76,6 @@ const profilController = {
     if (!isNumeric || !isUpperCase || !nbLetters) {
         return res.status(401).json ({ message : "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
     }
- 
-     // l'e-mail et la confirmation ne correspondent pas
-   if (req.body.email !== req.body.emailConfirm) {
-    return res.status(401).json({ message: "La confirmation de l'email ne correspond pas." });
-   };
-
-   // le mdp et la confirmation ne correspondent pas
-   if (req.body.password !== req.body.passwordConfirm) {
-    return res.status(401).json({ message: "La confirmation du mot de passe ne correspond pas." });
-   };
 
    // cryptage du password
    const salt = await bcrypt.genSalt(10);
@@ -124,7 +119,7 @@ const profilController = {
   }
  },
 
-  // RECUPERATION DU PROFIL
+  // RECUPERATION DU PROFIL UTILISATEUR
   getProfil: async (req, res) => {
   try {
     const userId = parseInt(req.params.userId);
