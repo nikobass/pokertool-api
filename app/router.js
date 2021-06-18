@@ -41,7 +41,7 @@ router.post('/tournament/:userId', tournamentController.createTournament);
 // Un tournoi pour un utilisteur
 router.get('/tournament/:id', tournamentController.getOneTournament);
 // update un tournoi
-//router.patch('/tournament/:id', tournamentController.updateTournament);
+router.patch('/tournament/:id', tournamentController.updateTournament);
 // Supprimer un tournoi
 router.delete('/tournament/:id', tournamentController.deleteTournament);
 // Timer d'un tournoi
