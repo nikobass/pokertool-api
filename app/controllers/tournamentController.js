@@ -1,14 +1,17 @@
-const { Tournament } = require("../models");
+const { Tournament, User } = require("../models");
 
 const tournamentController = {
  
-  // RECUPERATION DES TOURNOIS
+  // RECUPERATION DES TOURNOIS D'UN USER
  getAllTournaments: async (req, res) => {
   try {
-   const userId = parseInt(req.params.userId);
-   if (!userId) {
-    return res.status(401).json({ message: `Id ${userId} invalide !` });
-  } 
+   const userId = parseInt(req.params.userId, 10);
+    
+   // Recherche du USER
+   const user = await User.findByPk(userId);
+   if (!user) {
+    return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
+    }
 
    const tournaments = await Tournament.findAll({
     where: {
@@ -31,11 +34,8 @@ const tournamentController = {
   // RECUPERATION D'UN TOURNOI
   getOneTournament: async (req, res) => {
     try {
+      // Recherche du Tournoi
       const tournamentId = parseInt(req.params.id);
-      if (isNaN(tournamentId)) {
-        return res.status(401).json({ message: `Id manquant !` });
-       }
-
       const tournament = await Tournament.findByPk(tournamentId);
       
       if (tournament) {
@@ -53,15 +53,12 @@ const tournamentController = {
     try {
      const id = parseInt(req.params.id, 10);
   
-     if (isNaN(id)) {
-      return res.status(401).json({ message: `Id manquant !` });
-     }
-
      // recherche du tournoi en BDD
      const tournament = await Tournament.findByPk(id);
      if (!tournament) {
       return res.status(401).json({ message: `Le tournoi ${id} n'a pas été trouvé !` });
      }
+
      // Tournpoi trouvé = tournoi supprime
      await tournament.destroy();
      console.log(`TOURNAMENT `,id ,` supprimé`);
@@ -80,13 +77,13 @@ const tournamentController = {
     try {
       const data = req.body;
 
-      // vérification de la présente d'un ID user
       const userId = parseInt(req.params.userId, 10);
-        if (isNaN(userId)) {
-        return res.status(401).json({ message: `Id manquant !` });
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
       }
 
-      console.log(data, userId);
       // vérification des données obligatoires
         if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
 
@@ -96,7 +93,6 @@ const tournamentController = {
         data.buy_in = parseInt(data.buy_in, 10);
         data.cash_price = parseInt(data.cash_price, 10);
       
-      console.log("APRES", data, userId)
       //création du tournoi
       const newTournament = new Tournament({
         name: data.name,
@@ -111,40 +107,36 @@ const tournamentController = {
         comments: data.comments,
          user_id: userId
       });
-      console.log("TOURNOI créé !!!!", newTournament);
+
       //const tournament = await Tournament.create(data);
       await newTournament.save();
       console.log("TOURNOI enregistré !!!!");
       res.status(201).json(newTournament);
-
+    
     } catch (error) {
-    res
-      .status(500)
-      .json({ message: `Server error, please conta'ct' an administrator` });
+      res
+        .status(500)
+        .json({ message: `Server error, please conta'ct' an administrator` });
     }
-
   },
+
 
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 
     try {
       const data = req.body;
-      
-      // vérification de la présente d'un ID tournament
-      const tournamentId = parseInt(req.params.id, 10);
-        if (isNaN(tournamentId)) {
-        return res.status(401).json({ message: `Id manquant !` });
-      }
+      const id = parseInt(req.params.id, 10);
 
       // on vérirfie que le tournoi est en BDD
-      const tournament = await Tournament.findByPk(tournamentId);
+      const tournament = await Tournament.findByPk(id);
 
       if (!tournament) {
           return res.status(401).json({ message: `le tournoi ${tournamentId} n'a pas été trouvé !` });
       }
 
-      console.log(data)
+      console.log("passe")
+
       // vérification des données obligatoires
         if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price || !data.status) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
 
@@ -154,7 +146,7 @@ const tournamentController = {
         data.buy_in = parseInt(data.buy_in, 10);
         data.cash_price = parseInt(data.cash_price, 10);
       
-      console.log(data)
+
       // création du tournoi
       const tournamentUpdated = await tournament.update(data);
 
@@ -166,7 +158,6 @@ const tournamentController = {
       .status(500)
       .json({ message: `Server error, please contact an administrator` });
     }
-
   },
 
 };
