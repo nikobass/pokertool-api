@@ -120,7 +120,7 @@ const tournamentController = {
     }
   },
 
-
+  
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 
@@ -132,10 +132,8 @@ const tournamentController = {
       const tournament = await Tournament.findByPk(id);
 
       if (!tournament) {
-          return res.status(401).json({ message: `le tournoi ${tournamentId} n'a pas été trouvé !` });
+          return res.status(401).json({ message: `le tournoi ${id} n'a pas été trouvé !` });
       }
-
-      console.log("passe")
 
       // vérification des données obligatoires
         if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price || !data.status) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
@@ -145,9 +143,8 @@ const tournamentController = {
         data.starting_stack = parseInt(data.starting_stack, 10);
         data.buy_in = parseInt(data.buy_in, 10);
         data.cash_price = parseInt(data.cash_price, 10);
-      
 
-      // création du tournoi
+      // Modification du tournoi
       const tournamentUpdated = await tournament.update(data);
 
       console.log("TOURNOI modifié avec succés !!!!");
