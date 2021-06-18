@@ -120,7 +120,7 @@ const tournamentController = {
     }
   },
 
-
+  
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 
