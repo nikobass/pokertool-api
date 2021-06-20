@@ -1,5 +1,6 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
+const sanitizeHtml = require('sanitize-html');
 
 const { generateAccessToken } = require("../utils");
 
@@ -10,9 +11,11 @@ const authController = {
   try {
     const data = req.body;
 
-    data.user_name = sanitizeHtml(data.user_name);
+
+    console.log(data)
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
+    console.log(data)
 
     // vérification des données
     if (!data.email || !data.password) {
