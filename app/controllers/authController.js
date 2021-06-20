@@ -11,11 +11,8 @@ const authController = {
   try {
     const data = req.body;
 
-
-    console.log(data)
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
-    console.log(data)
 
     // vérification des données
     if (!data.email || !data.password) {
@@ -40,7 +37,6 @@ const authController = {
    }
 
    // si tout va bien, on renvoie le pseudo, email et on génére le TOKEN...
-   console.log("Tout est OK, le USER peut entrer");
    res.status(200).json({
     nickname: user.user_name,
     userId: user.id,
@@ -48,7 +44,6 @@ const authController = {
    });
 
   } catch (err) {
-   //console.trace(err);
    res.status(500).json({message: 'REQUETE INVALIDE'});
   }
  },
@@ -58,11 +53,6 @@ const authController = {
 
   try {
    const email = req.params.email;
-    
-   // vérification email dans la route
-    if (!email) {
-      return res.status(401).json({message: `email non renseigné dans la route`})
-    }
 
    //Vérification du user
    const user = await User.findOne({
@@ -95,11 +85,6 @@ deleteResetPassword: async (req, res) => {
   try {
    const email = req.params.email;
 
-    // vérification email dans la route
-    if (!email) {
-      return res.status(401).json({message: `email non renseigné dans la route`})
-    }
-
    //Vérification du user
    const user = await User.findOne({
     where: {
@@ -114,8 +99,7 @@ deleteResetPassword: async (req, res) => {
 
    // supprimer key_password
    const deleteKeypassword = await user.update(user);
-   console.log("Key password supprimé avec succés !!!!");
-   res.status(201).json(deleteKeypassword);
+   res.status(201).json({ message: `key Password supprimée, pour l'utilisateur ${email}` });
 
   } catch (error) {
    res
