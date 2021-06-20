@@ -180,7 +180,7 @@ const tournamentController = {
         where: {
           id: id,
         },
-        include: {
+        include: { // on recupère tout ce qui est lié au tournoi
           all:true,
           nested: true,
         }

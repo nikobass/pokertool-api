@@ -87,7 +87,6 @@ const profilController = {
 
    // création de l'utilisateur
    const user = await User.create(data);
-   console.log("USER créé avec succés !!!!");
    res.status(200).json(user);
 
   } catch (error) {
@@ -99,20 +98,19 @@ const profilController = {
 
  //SUPPRESSION D'UN UTILISATEUR
  deleteProfil: async (req, res) => {
-  console.log('passe');
+
   try {
    const id = parseInt(req.params.userId, 10);
 
-   console.log('passe');
+
    // recherche de l'utilisateur en BDD
    const user = await User.findByPk(id);
    if (!user) {
-    return next();
+    return res.status(401).json ({message : "Aucun utilisateur trouvé !"})
    }
    // Utilisateur trouvé = utilisateur supprimeé
    await user.destroy();
-   console.log(`USER `,id ,` supprimé`);
-   res.status(200).json({ message: `Utilisateur supprimé !` });
+   res.status(200).json({ message: `Utilisateur ${email} supprimé !` });
 
   } catch (error) {
    res
@@ -126,12 +124,8 @@ const profilController = {
   try {
     const userId = parseInt(req.params.userId);
 
-    if (isNaN(userId)) {
-      return res.status(401).json({ message: `Id manquant !` });
-    }
-
+    // Recherche de l'utilisateur
     const user = await User.findByPk(userId);
-    
     if (user) {
       res.json(user)
     } else {
@@ -150,11 +144,7 @@ const profilController = {
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
 
-    // on vérifie l'id de la route  
     const id = parseInt(req.params.userId, 10);
-    if (isNaN(id)) {
-      return res.status(401).json({error: "Id manquant"});
-    }
 
       // on vérirfie que l'utilisateur est en BDD
       const user = await User.findByPk(id);

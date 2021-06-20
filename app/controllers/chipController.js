@@ -14,7 +14,6 @@ const chipController = {
 
       // Recherche des CHIPS
       const chips = await Chip.findAll({where: {user_id: userId}});
-      console.log(chips);
       if(chips.length > 0) {
         res.status(200).json(chips);
       } else{
@@ -70,7 +69,6 @@ const chipController = {
         });
 
         await newChip.save();
-        console.log("CHIP enregistrés !!!!");
       }
 
       // Réponse = CHIPS du USER dans la BDD
