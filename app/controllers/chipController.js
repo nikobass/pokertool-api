@@ -84,7 +84,6 @@ const chipController = {
       res.status(500).json({ message: `Server error, please conta'ct' an administrator` });
     }
   },
-
 };
 
 module.exports = chipController;
