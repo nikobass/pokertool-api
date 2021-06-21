@@ -104,5 +104,16 @@ INSERT INTO "cashprice" ("id", "position", "amount", "tournament_id") VALUES
 (17, 2, 70, 8),
 (18, 3, 20, 8);
 
+-- INSERT INTO "structure_default" ("id", "stage", "small_blind", "big_blind") VALUES
+-- (1, 1, 10, 20, 1),
+-- (2, 2, 20, 40, 1),
+-- (3, 3, 40, 80, 1),
+-- (4, 4, 80, 160, 1),
+-- (5, 5, 160, 320, 1),
+-- (6, 6, 320, 640, 1),
+-- (7, 7, 640, 1280, 1),
+-- (8, 8, 1280, 2560, 1),
+-- (9, 9, 2560, 5120, 1);
+
 
 COMMIT
