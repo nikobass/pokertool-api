@@ -77,7 +77,6 @@ const tournamentController = {
     try {
       const data = req.body;
 
-      console.log(data)
       data.name = sanitizeHtml(data.name);
       data.comments = sanitizeHtml(data.comments);
 

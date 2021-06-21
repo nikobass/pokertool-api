@@ -1,6 +1,4 @@
 const express = require('express');
-
-// test JWT
 const { auth } = require('./middleware/auth');
 
 // CONTROLLERS' IMPORT 
@@ -16,8 +14,6 @@ const router = express.Router();
 // == AUTHENTIFICATION + CONNEXION
 // Données d'authentification du user
 router.post('/signin', authController.authUser);
-// reset password
-//router.get('/resetPassword/:email', authController.getResetPassword);
 //On alimente le key_password
 router.patch('/resetPassword/add/:email', authController.addResetPassword);
 // On supprime le key_password
@@ -56,7 +52,7 @@ router.post('/chip/:userId', chipController.fillUserChips);
 //==  DISTRIBUTOR  ==> penser à remettre la verif TOKEN ===> AUTH
 // données distributor
 router.get('/distributor/:tournamentId', distributionController.getDistributor);
-// modification distributor
+// Alimentation du distributor + création de la structure
 router.post('/distributor/:tournamentId', distributionController.fillTournamentDistributor);
 
 // ERROR 404

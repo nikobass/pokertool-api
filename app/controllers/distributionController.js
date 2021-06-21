@@ -33,7 +33,6 @@ const distributionController = {
       const arrayStructure = req.body[1];
       const distributionList = [];
       const structureList = [];
-      console.log(arrayDistribution, arrayStructure)
 
       // vérification que les données DISTRIBUTION et STRUCTURE ne soient pas vides
       if(arrayDistribution.length === 0 || arrayStructure.length === 0) {
@@ -78,6 +77,7 @@ const distributionController = {
               where: {tournament_id: tournamentId}
             });
         };  
+        //return;
 
       // Création du DISTRIBUTOR avec donnée FRONT
       for(const dataDistribution of arrayDistribution) {
@@ -112,7 +112,7 @@ const distributionController = {
       };
 
       // Réponse = DISTRIBUTOR et STRUCTURE du TOURNOI dans la BDD
-      res.status(200).json([{distributionList, structureList}]);
+      res.status(200).json([distributionList, structureList]);
 
     } catch (error) {
       res.status(500).json({ message: `Server error, please contact an administrator` });
