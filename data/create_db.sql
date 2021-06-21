@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS
 "tournament",
 "chip",
 "distribution",
+"tounament_has_structure",
+"structure_default",
 "cashprice";
 
 CREATE TABLE IF NOT EXISTS "user" (
