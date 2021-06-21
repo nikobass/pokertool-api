@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS
 "tournament",
 "chip",
 "distribution",
-"cashprice",
+"cashprice";
 
 CREATE TABLE IF NOT EXISTS "user" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -104,5 +104,4 @@ INSERT INTO "cashprice" ("id", "position", "amount", "tournament_id") VALUES
 (17, 2, 70, 8),
 (18, 3, 20, 8);
 
-
 COMMIT

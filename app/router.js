@@ -8,6 +8,7 @@ const distributionController = require('./controllers/distributionController');
 const mainController = require('./controllers/mainController');
 const profilController = require('./controllers/profilController');
 const tournamentController = require('./controllers/tournamentController');
+const structureController = require('./controllers/structureController');
 
 const router = express.Router();
 
@@ -54,6 +55,10 @@ router.post('/chip/:userId', chipController.fillUserChips);
 router.get('/distributor/:tournamentId', distributionController.getDistributor);
 // Alimentation du distributor + création de la structure
 router.post('/distributor/:tournamentId', distributionController.fillTournamentDistributor);
+
+//==  STRUCTURE  ==> penser à remettre la verif TOKEN ===> AUTH
+// données structure
+router.get('/structure/:tournamentId', structureController.getStructure);
 
 // ERROR 404
 router.use(mainController.error404);
