@@ -77,6 +77,7 @@ const tournamentController = {
     try {
       const data = req.body;
 
+      console.log(data)
       data.name = sanitizeHtml(data.name);
       data.comments = sanitizeHtml(data.comments);
 
@@ -108,22 +109,15 @@ const tournamentController = {
         cash_price: data.cash_price,
         status: "prévu",
         comments: data.comments,
-         user_id: userId
+        user_id: userId
       });
 
       const tournamentCreated = await newTournament.save();
       
       if (tournamentCreated.length === 0) {return res.status(401).json({message: 'aucun tournoi de créé !'});}
 
-      // jointure TOURNOI / STRUCTURE DU TOURNOI
-      const defaultStructure = await Structure.findAll(); // table des structures par défault
-
-      for(const structure of defaultStructure) {
-        await structure.addTournament(tournamentCreated);
-      }
-
       // je renvoie la réponse = le nouveau tournoi
-      res.status(201).json({newTournament});
+      res.status(201).json({tournamentCreated});
     
     } catch (error) {
       res
@@ -132,6 +126,47 @@ const tournamentController = {
     }
   },
   
+//  // CREATION D'UNE STRUCTURE
+//  fillTournamentStructure: async (req, res) => {
+
+//   try {
+//     const structuresData = req.body;
+//     const structuresCreated = [];
+
+//     //Recherche d'une DISTRIBUTION
+//     const tournamentId = parseInt(req.params.id, 10);
+//     const distribution = await Distribution.findAll({where: {tournament_id: tournamentId}});
+//     if (!distribution) {
+//       return res.status(401).json({ message: `Aucune distribution de trouvée pour le tournoi : ${tournamentId} !` })
+//     }
+
+//     for(structure of structuresData) {
+//       // vérification des données obligatoires
+//       if(!structure.stage || !structure.small_blind || !structure.big_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+
+//       //création de la strusture
+//       const newStructure = new Structure({
+//         stage: data.name,
+//         small_blind: data.date,
+//         big_blind: data.location,
+//         tournament_id: data.tournament_id
+//       });
+
+//       const structureCreated = await newStructure.save();
+
+//       structuresCreated.push(structureCreated);
+//     }
+    
+//       // reponse : liste des structures
+//       res.status(200).json({ structuresCreated })
+    
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: `Server error, please contact an administrator` });
+//   }
+// },
+
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 

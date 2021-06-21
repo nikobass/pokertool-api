@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS
 "chip",
 "distribution",
 "cashprice",
-"tournament_has_structure";
 
 CREATE TABLE IF NOT EXISTS "user" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
