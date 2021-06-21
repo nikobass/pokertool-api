@@ -7,8 +7,7 @@ DROP TABLE IF EXISTS
 "tournament",
 "chip",
 "distribution",
-"cashprice",
-"structure_default",
+"cashprice";
 
 CREATE TABLE IF NOT EXISTS "user" (
     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -81,15 +80,5 @@ CREATE TABLE IF NOT EXISTS "cashprice" (
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
-
--- CREATE TABLE IF NOT EXISTS "structure_default" (
---     --"id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
---     "id" serial PRIMARY KEY,
---     "stage" INTEGER NOT NULL,
---     "small_blind" INTEGER NOT NULL,
---     "big_blind" INTEGER NOT NULL,
---     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
---     "updated_at" TIMESTAMPTZ
--- );
 
 COMMIT;
