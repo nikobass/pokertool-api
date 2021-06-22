@@ -54,7 +54,7 @@ router.post('/chip/:userId', chipController.fillUserChips);
 // données distributor
 router.get('/distributor/:tournamentId', distributionController.getDistributor);
 // Alimentation du distributor + création de la structure
-router.post('/distributor/:tournamentId', distributionController.fillTournamentDistributor);
+router.post('/distributor/:tournamentId', distributionController.createDistributor);
 
 //==  STRUCTURE  ==> penser à remettre la verif TOKEN ===> AUTH
 // données structure

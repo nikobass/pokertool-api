@@ -1,4 +1,5 @@
-const { Tournament, User, Structure } = require("../models");
+const { Tournament, User } = require("../models");
+const { createStructure } = require("../middleware/structure");
 const sanitizeHtml = require('sanitize-html');
 
 const tournamentController = {
@@ -75,10 +76,20 @@ const tournamentController = {
   createTournament: async (req, res) => {
 
     try {
-      const data = req.body;
+      const arrayTournament = req.body[0];
+      const arrayStructure = req.body[1];
 
-      data.name = sanitizeHtml(data.name);
-      data.comments = sanitizeHtml(data.comments);
+      // vérification que l'on reçoit des données Tournoi et Structure du FRONT
+      if(!arrayStructure || !arrayTournament) {return res.status(401).json({ message: `Pas de données tournoi ou structure du FRONT !`})};
+
+      // vérification des données obligatoires STRUCTURE et TOURNOI
+      if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.cash_price || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires du tournoi soient correctement saisies !` });}
+
+      for(const data of arrayStructure) {
+        if(!data.stage || !data.small_blind || !data.big_blind) { 
+          return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies pour la structure du tournoi !` });
+            }
+      };
 
       //Recherche du USER
       const userId = parseInt(req.params.userId, 10);
@@ -87,27 +98,30 @@ const tournamentController = {
         return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
       }
 
-      // vérification des données obligatoires
-        if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+      // format des données
+      arrayTournament.name = sanitizeHtml(arrayTournament.name);
+      arrayTournament.comments = sanitizeHtml(arrayTournament.comments);
 
-        data.nb_players = parseInt(data.nb_players, 10);
-        data.speed = parseInt(data.speed, 10);
-        data.starting_stack = parseInt(data.starting_stack, 10);
-        data.buy_in = parseInt(data.buy_in, 10);
-        data.cash_price = parseInt(data.cash_price, 10);
-      
+      arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10);
+      arrayTournament.speed = parseInt(arrayTournament.speed, 10);
+      arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10);
+      arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
+      arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
+      arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
+
       //création du tournoi
       const newTournament = new Tournament({
-        name: data.name,
-        date: data.date,
-        location: data.location,
-        nb_players: data.nb_players,
-        speed: data.speed,
-        starting_stack: data.starting_stack,
-        buy_in: data.buy_in,
-        cash_price: data.cash_price,
+        name: arrayTournament.name,
+        date: arrayTournament.date,
+        location: arrayTournament.location,
+        nb_players: arrayTournament.nb_players,
+        speed: arrayTournament.speed,
+        starting_stack: arrayTournament.starting_stack,
+        buy_in: arrayTournament.buy_in,
+        cash_price: arrayTournament.cash_price,
         status: "prévu",
-        comments: data.comments,
+        comments: arrayTournament.comments,
+        small_blind: arrayTournament.small_blind,
         user_id: userId
       });
 
@@ -116,91 +130,81 @@ const tournamentController = {
       if (tournamentCreated.length === 0) {return res.status(401).json({message: 'aucun tournoi de créé !'});}
 
       // je renvoie la réponse = le nouveau tournoi
-      res.status(201).json({tournamentCreated});
-    
+      res.status(201).json(tournamentCreated);
+
+      // Lancement de la création de la structure avec le nouveau tournoi
+      const tournamentId = tournamentCreated.id;
+      // création de la structure
+      createStructure([tournamentId, arrayStructure]);
+
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `Server error, please conta'ct' an administrator` });
+      res.status(500).json({ message: `Server error, please conta'ct' an administrator` });
     }
   },
   
- // CREATION D'UNE STRUCTURE PAR DEFAULT
- 
- fillTournamentStructure: async (req, res) => {
-
-  try {
-    const structuresData = req.body;
-    const structuresCreated = [];
-
-    //Recherche d'une DISTRIBUTION
-    const tournamentId = parseInt(req.params.id, 10);
-    const distribution = await Distribution.findAll({where: {tournament_id: tournamentId}});
-    if (!distribution) {
-      return res.status(401).json({ message: `Aucune distribution de trouvée pour le tournoi : ${tournamentId} !` })
-    }
-
-    for(structure of structuresData) {
-      // vérification des données obligatoires
-      if(!structure.stage || !structure.small_blind || !structure.big_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
-
-      //création de la strusture
-      const newStructure = new Structure({
-        stage: data.name,
-        small_blind: data.date,
-        big_blind: data.location,
-        tournament_id: data.tournament_id
-      });
-
-      const structureCreated = await newStructure.save();
-
-      structuresCreated.push(structureCreated);
-    }
-    
-      // reponse : liste des structures
-      res.status(200).json({ structuresCreated })
-    
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: `Server error, please contact an administrator` });
-  }
-},
-
   // MODIFICATION D'UN TOURNOI
   updateTournament: async (req, res) => {
 
     try {
-      const data = req.body;
+      const arrayTournament = req.body[0];
+      const arrayStructure = req.body[1];
       const id = parseInt(req.params.id, 10);
-      data.name = sanitizeHtml(data.user_name);
-      data.comments = sanitizeHtml(data.comments);
+      const smallBlindModified = false;
 
       // on vérirfie que le tournoi est en BDD
       const tournament = await Tournament.findByPk(id);
-
       if (!tournament) {
           return res.status(401).json({ message: `le tournoi ${id} n'a pas été trouvé !` });
       }
 
-      // vérification des données obligatoires
-        if(!data.name || !data.date || !data.location || !data.nb_players || !data.speed || !data.starting_stack || !data.buy_in || !data.cash_price || !data.status) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+      // Vérification des données tournois non vides du FRONT
+      if(!arrayTournament || arrayTournament.length > 1) {return res.status(401).json({message: 'Les données tournois sont ne sont pas cohérentes !'})}
 
-        data.nb_players = parseInt(data.nb_players, 10);
-        data.speed = parseInt(data.speed, 10);
-        data.starting_stack = parseInt(data.starting_stack, 10);
-        data.buy_in = parseInt(data.buy_in, 10);
-        data.cash_price = parseInt(data.cash_price, 10);
+      // vérification des données obligatoires du tournoi
+      if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.cash_price || !arrayTournament.status || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });}
+
+      // si small_blind transmise différente de small_blind BDD alors besoin des données structures
+      const smallBlindTournament = arrayTournament.small_blind;
+      const smallBlindBdd = tournament.small_blind;
+      if(smallBlindBdd != smallBlindTournament) {
+        const smallBlindModified = true;
+        // Vérification des données structures non vides du FRONT
+        if(!arrayStructure) {
+          return res.status(401).json({message: 'Les données structures ne doivent pas être vides si la small_bind change !'})
+        } else {
+          // vérification des données obligatoires pour chaque ligne de structure du front
+          for(structure of arrayStructure) {
+            if(!structure.stage || !structure.small_blind || !structure.big_blind) {
+              return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies dans les structures !` });
+            } else {
+              structure.stage = parseInt(structure.stage, 10);
+              structure.small_blind = parseInt(structure.small_blind, 10);
+              structure.big_blind = parseInt(structure.big_blind, 10);
+            }
+          }
+        }
+      }
+
+      // Formatage des données tournoi
+      arrayTournament.name = sanitizeHtml(arrayTournament.user_name);
+      arrayTournament.comments = sanitizeHtml(arrayTournament.comments);
+
+      arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10);
+      arrayTournament.speed = parseInt(arrayTournament.speed, 10);
+      arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10);
+      arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
+      arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
+      arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
 
       // Modification du tournoi
-      const tournamentUpdated = await tournament.update(data);
-
+      const tournamentUpdated = await tournament.update(arrayTournament);
       res.status(201).json(tournamentUpdated);
 
+      // si mofdification de la small_blind on modifie la structure du tournois
+      if(smallBlindModified) {createStructure([id, arrayStructure])};
+
     } catch (error) {
-    res
-      .status(500)
-      .json({ message: `Server error, please contact an administrator` });
+      res.status(500).json({ message: `Server error, please contact an administrator` });
     }
   },
 

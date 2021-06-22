@@ -31,7 +31,11 @@ Tournament.init({
     status: {
         type: DataTypes.TEXT,
         allowNull: false},
-    comments: DataTypes.TEXT
+    comments: DataTypes.TEXT,
+    chips_user: DataTypes.BOOLEAN,
+    small_blind: {
+        type: DataTypes.INTEGER,
+        allowNull: false}
 },{
     sequelize,
     tableName: 'tournament',

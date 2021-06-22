@@ -110,7 +110,7 @@ const profilController = {
    }
    // Utilisateur trouvé = utilisateur supprimeé
    await user.destroy();
-   res.status(200).json({ message: `Utilisateur ${email} supprimé !` });
+   res.status(200).json({ message: `Utilisateur supprimé !` });
 
   } catch (error) {
    res
