@@ -12,6 +12,10 @@ const profilController = {
 
   try {
    const data = req.body;
+   
+    if(!data.user_name || !data.email || !data.password) {return res.status(401).json({message: 'Vérifiez que les données obligatoires soient bien renseignées !'})};
+   
+   
     data.user_name = sanitizeHtml(data.user_name);
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
@@ -61,7 +65,7 @@ const profilController = {
         nbLetters = true;
     }
 
-    // On vérifie la présence d'une majuscule et d'un chiffre
+    // On vérifie la présence d'une majuscule et d'un chiffre dans le PWD
     while (i < verifUserPwd.length) {
         character = verifUserPwd.charAt(i);
 
@@ -84,6 +88,7 @@ const profilController = {
    // cryptage du password
    const salt = await bcrypt.genSalt(10);
    data.password = await bcrypt.hash(req.body.password, salt);
+  
 
    // création de l'utilisateur
    const user = await User.create(data);
@@ -110,7 +115,7 @@ const profilController = {
    }
    // Utilisateur trouvé = utilisateur supprimeé
    await user.destroy();
-   res.status(200).json({ message: `Utilisateur ${email} supprimé !` });
+   res.status(200).json({ message: `Utilisateur supprimé !` });
 
   } catch (error) {
    res
@@ -140,13 +145,14 @@ const profilController = {
   updateProfil: async (req, res, next) => {
   try {
     const data = req.body;
+
     data.user_name = sanitizeHtml(data.user_name);
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
 
     const id = parseInt(req.params.userId, 10);
 
-      // on vérirfie que l'utilisateur est en BDD
+      // on vérifie que l'utilisateur est en BDD
       const user = await User.findByPk(id);
       if (!user) {
           return res.status(401).json({ message: `l'utilisateur ${Id} n'a pas été trouvé !` });

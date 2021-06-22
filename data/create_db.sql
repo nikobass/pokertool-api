@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS "tournament" (
     "buy_in" INTEGER NOT NULL,
     "cash_price" INTEGER NOT NULL,
     "status" VARCHAR(128) NOT NULL,
+    "small_blind" INTEGER NOT NULL,
+    "chips_user" BOOLEAN NOT NULL DEFAULT FALSE,
     "comments" TEXT,
     "user_id" INTEGER NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),

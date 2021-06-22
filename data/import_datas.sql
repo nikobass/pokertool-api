@@ -5,15 +5,15 @@ INSERT INTO "user" ("id", "user_name", "email", "password") VALUES
 (2, 'Noë', 'noe@at.fr', '$2b$10$d6pBCdawfZu4SbgGTg6Ei.CGBROLQnxzE0IfswQ.qWJ80pVX1xCLS'),
 (3, 'Etienne', 'etiennes@at.fr', '$2b$10$d6pBCdawfZu4SbgGTg6Ei.CGBROLQnxzE0IfswQ.qWJ80pVX1xCLS');
 
-INSERT INTO "tournament" ("id", "name", "date", "location", "nb_players", "speed", "starting_stack", "buy_in", "cash_price", "status", "comments", "user_id") VALUES
-(1, 'Tournoi 1', '2021-06-13T11:00:11.832Z', 'Chez Yann', 6, 20, 1500, 0, 190, 'terminé', '', 1),
-(2, 'Tournoi 2', '2021-04-17T20:30:00.832Z', 'Chez Yann ou chez françoise', 8, 15, 2000, 10, 170, 'terminé', '', 1),
-(3, 'Tournoi 3', '2021-07-31T19:30:00.832Z', 'Chez Yann', 6, 25, 3000, 20, 90, 'prévu', 'ici je mets mon commentaire du tournoi 3 pour ne pas oublier qque chose', 1),
-(4, 'Tournoi 4', '2021-11-27T20:00:00.832Z', '22 rue Charles de Gaulle, 33720 Bordeaux', 10, 30, 1250, 10, 0, 'prévu', 'ici je mets mon commentaire du tournoi 4 pour ne pas oublier qque chose', 1),
-(5, 'Tournoi 5', '2021-08-07T19:30:00.832Z', 'Casino Royal, 18 rue de la Marne, 45000 Orléans', 6, 25, 3000, 20, 190, 'prévu', 'ici je mets mon commentaire du tournoi 5 pour ne pas oublier qque chose', 1),
-(6, 'Tournoi 6', '2021-08-14T18:00:00.832Z', 'Chez Yann', 10, 30, 1250, 10, 350, 'prévu', 'ici je mets mon commentaire du tournoi 6 pour ne pas oublier qque chose', 1),
-(7, 'Tournoi 7', '2021-09-11T19:00:00.832Z', 'Chez Yann', 6, 25, 3000, 20, 0, 'prévu', 'ici je mets mon commentaire du tournoi 7 pour ne pas oublier qque chose', 1),
-(8, 'Tournoi 8', '2021-09-25T19:00:00.832Z', 'Chez Yann', 10, 30, 1250, 10, 540, 'prévu', 'ici je mets mon commentaire du tournoi 8 pour ne pas oublier qque chose', 1);
+INSERT INTO "tournament" ("id", "name", "date", "location", "nb_players", "speed", "starting_stack", "buy_in", "cash_price", "status", "small_blind", "chips_user", "comments", "user_id") VALUES
+(1, 'Tournoi 1', '2021-06-13T11:00:11.832Z', 'Chez Yann', 6, 20, 1500, 0, 190, 'terminé', 10, false, '', 1),
+(2, 'Tournoi 2', '2021-04-17T20:30:00.832Z', 'Chez Yann ou chez françoise', 8, 15, 2000, 10, 170, 'terminé', 10, false, '', 1),
+(3, 'Tournoi 3', '2021-07-31T19:30:00.832Z', 'Chez Yann', 6, 25, 3000, 20, 90, 'prévu', 10, false, 'ici je mets mon commentaire du tournoi 3 pour ne pas oublier qque chose', 1),
+(4, 'Tournoi 4', '2021-11-27T20:00:00.832Z', '22 rue Charles de Gaulle, 33720 Bordeaux', 10, 30, 1250, 10, 0, 'prévu', 10, false, 'ici je mets mon commentaire du tournoi 4 pour ne pas oublier qque chose', 1),
+(5, 'Tournoi 5', '2021-08-07T19:30:00.832Z', 'Casino Royal, 18 rue de la Marne, 45000 Orléans', 6, 25, 3000, 20, 190, 'prévu', 10, true, 'ici je mets mon commentaire du tournoi 5 pour ne pas oublier qque chose', 1),
+(6, 'Tournoi 6', '2021-08-14T18:00:00.832Z', 'Chez Yann', 10, 30, 1250, 10, 350, 'prévu', 10, false, 'ici je mets mon commentaire du tournoi 6 pour ne pas oublier qque chose', 1),
+(7, 'Tournoi 7', '2021-09-11T19:00:00.832Z', 'Chez Yann', 6, 25, 3000, 20, 0, 'prévu', 10, true, 'ici je mets mon commentaire du tournoi 7 pour ne pas oublier qque chose', 1),
+(8, 'Tournoi 8', '2021-09-25T19:00:00.832Z', 'Chez Yann', 10, 30, 1250, 10, 540, 'prévu', 10, false, 'ici je mets mon commentaire du tournoi 8 pour ne pas oublier qque chose', 1);
 
 INSERT INTO "structure" ("id", "stage", "small_blind", "big_blind", "tournament_id") VALUES
 (1, 1, 10, 20, 1),
@@ -103,5 +103,13 @@ INSERT INTO "cashprice" ("id", "position", "amount", "tournament_id") VALUES
 (16, 1, 100, 8),
 (17, 2, 70, 8),
 (18, 3, 20, 8);
+
+-- Mise à jour des id
+SELECT setval('user_id_seq', (SELECT MAX(id) from "user"));
+SELECT setval('structure_id_seq', (SELECT MAX(id) from "structure"));
+SELECT setval('tournament_id_seq', (SELECT MAX(id) from "tournament"));
+SELECT setval('chip_id_seq', (SELECT MAX(id) from "chip"));
+SELECT setval('distribution_id_seq', (SELECT MAX(id) from "distribution"));
+SELECT setval('cashprice_id_seq', (SELECT MAX(id) from "cashprice"));
 
 COMMIT

@@ -11,7 +11,6 @@ function generateAccessToken(userId) {
 function BcryptData(data) {
  const salt = bcrypt.genSaltSync(10);
  const pwdCrypted = bcrypt.hashSync(data, salt);
-
  return pwdCrypted;
 }
 
