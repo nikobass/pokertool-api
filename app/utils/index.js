@@ -33,12 +33,6 @@ async function createStructure(data) {
         return res.status(401).json({ message: `Aucun tournoi trouvé pour le tournoi : ${tournamentId} !` })
       }
 
-      //Vérification des données Structures obligatoires
-      for(structure of structuresData) {
-        // vérification des données obligatoires
-        if(!structure.stage || !structure.small_blind || !structure.big_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations structures obligatoires soient correctement saisies !` });}
-      }
-
       // Recherche et suppression des données STRUCTURE du tournoi en BDD
       const structuresBdd = await Structure.findAll({where: {tournament_id: tournamentId}});
       if(structuresBdd.length > 0) {

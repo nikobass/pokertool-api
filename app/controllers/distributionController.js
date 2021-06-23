@@ -47,10 +47,13 @@ const distributionController = {
       // vérification des données obligatoires DISTRIBUTION du tournoi
       for(const data of arrayDistribution) {
         if(!data.color || !data.value || !data.quantity) { 
-          return res
-            .status(401)
-            .json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies pour la distribution !` });
+          return res .status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies pour la distribution !` });
         }
+        data.value = parseInt(data.value, 10);
+        if(isNaN(data.value)) {return res.status(401).json({ message: `L'une des valeurs de jetons n'est pas un nombre !` })};
+
+        data.quantity = parseInt(data.quantity, 10);
+        if(isNaN(data.quantity)) {return res.status(401).json({ message: `L'une des quantité de jetons n'est pas un nombre !` })};
       };
 
       // Recherche et suppression des données DISTRIBUTOR du tournoi
@@ -63,17 +66,12 @@ const distributionController = {
 
       // Création du DISTRIBUTOR avec données FRONT
       for(const dataDistribution of arrayDistribution) {
-        dataDistribution.value = parseInt(dataDistribution.value, 10);
-        dataDistribution.quantity = parseInt(dataDistribution.quantity, 10);
-
-        //création des CHIPS
         const newChipsDistributor = await Distribution.create({
           quantity: dataDistribution.quantity,
           color: dataDistribution.color,
           value: dataDistribution.value,
           tournament_id: tournamentId
         });
-
         distributionList.push(newChipsDistributor);
       };
 

@@ -87,9 +87,19 @@ const tournamentController = {
       if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.cash_price || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires du tournoi soient correctement saisies !` });}
 
       for(const data of arrayStructure) {
+        
         if(!data.stage || !data.small_blind || !data.big_blind) { 
           return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies pour la structure du tournoi !` });
         }
+
+        data.stage = parseInt(data.stage, 10);
+        if(isNaN(data.stage)) {return res.status(401).json({ message: `L'une des valeurs des étapes de structures n'est pas un nombre !` })};
+
+        data.small_blind = parseInt(data.small_blind, 10);
+        if(isNaN(data.small_blind )) {return res.status(401).json({ message: `L'une des valeurs de la petite blind n'est pas un nombre !` })};
+
+        data.big_blind = parseInt(data.big_blind, 10);
+        if(isNaN(data.big_blind)) {return res.status(401).json({ message: `L'une des valeurs de la grosse blind n'est pas un nombre !` })};
       };
 
       //Recherche du USER
@@ -104,11 +114,22 @@ const tournamentController = {
       arrayTournament.comments = sanitizeHtml(arrayTournament.comments);
 
       arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10);
+      if(isNaN(arrayTournament.nb_players)) {return res.status(401).json({ message: `Le nombre de joueurs n'est pas un nombre !` })};
+
       arrayTournament.speed = parseInt(arrayTournament.speed, 10);
+      if(isNaN(arrayTournament.speed)) {return res.status(401).json({ message: `La durée des étapes n'est pas un nombre !`})};
+
       arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10);
+      if(isNaN(arrayTournament.starting_stack)) {return res.status(401).json({ message: `Le tapis de départ n'est pas un nombre !`})};
+
       arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
+      if(isNaN(arrayTournament.buy_in)) {return res.status(401).json({ message: `Le buy-in n'est pas un nombre !`})};
+
       arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
+      if(isNaN(arrayTournament.cash_price)) {return res.status(401).json({ message: `Le cash-price n'est pas un nombre !`})};
+
       arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
+      if(isNaN(arrayTournament.small_blind)) {return res.status(401).json({ message: `Là petite blind n'est pas un nombre !`})};
 
       //création du tournoi
       const newTournament = new Tournament({
@@ -178,23 +199,39 @@ const tournamentController = {
               return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies dans les structures !` });
             } else {
               structure.stage = parseInt(structure.stage, 10);
+              if(isNaN(structure.stage)) {return res.status(401).json({ message: `L'une des valeurs des étapes de structures n'est pas un nombre !` })};
+
               structure.small_blind = parseInt(structure.small_blind, 10);
+              if(isNaN(structure.small_blind )) {return res.status(401).json({ message: `L'une des valeurs de la petite blind n'est pas un nombre !` })};
+
               structure.big_blind = parseInt(structure.big_blind, 10);
+              if(isNaN(structure.big_blind)) {return res.status(401).json({ message: `L'une des valeurs de la grosse blind n'est pas un nombre !` })};
             }
           }
         }
       }
 
-      // Formatage des données tournoi
-      if(arrayTournament.name) {arrayTournament.name = sanitizeHtml(arrayTournament.name)};
-      if(arrayTournament.comments) {arrayTournament.comments = sanitizeHtml(arrayTournament.comments)};
+      // Formatage des données
+      arrayTournament.name = sanitizeHtml(arrayTournament.name);
+      arrayTournament.comments = sanitizeHtml(arrayTournament.comments);
 
-      if(arrayTournament.nb_players) {arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10)};
-      if(arrayTournament.speed) {arrayTournament.speed = parseInt(arrayTournament.speed, 10)};
-      if(arrayTournament.starting_stack) {arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10)};
-      if(arrayTournament.buy_in) {arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10)};
-      if(arrayTournament.small_blind) {arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10)};
-      if(arrayTournament.cash_price) {arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10)};
+      arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10);
+      if(isNaN(arrayTournament.nb_players)) {return res.status(401).json({ message: `Le nombre de joueurs n'est pas un nombre !` })};
+
+      arrayTournament.speed = parseInt(arrayTournament.speed, 10);
+      if(isNaN(arrayTournament.speed)) {return res.status(401).json({ message: `La durée des étapes n'est pas un nombre !`})};
+
+      arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10);
+      if(isNaN(arrayTournament.starting_stack)) {return res.status(401).json({ message: `Le tapis de départ n'est pas un nombre !`})};
+
+      arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
+      if(isNaN(arrayTournament.buy_in)) {return res.status(401).json({ message: `Le buy-in n'est pas un nombre !`})};
+
+      arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
+      if(isNaN(arrayTournament.cash_price)) {return res.status(401).json({ message: `Le cash-price n'est pas un nombre !`})};
+
+      arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
+      if(isNaN(arrayTournament.small_blind)) {return res.status(401).json({ message: `Là petite blind n'est pas un nombre !`})};
 
       // Modification du tournoi
       const tournamentUpdated = await tournament.update(arrayTournament);

@@ -43,6 +43,11 @@ const chipController = {
         if(!data.color || !data.value || !data.quantity) { 
           return res.status(401).json({ message: `Vérifier que toutes les données ne soient pas nulles !` });
         }
+        data.value = parseInt(data.value, 10);
+        if(isNaN(data.value)) {return res.status(401).json({ message: `L'une des valeurs de jetons n'est pas un nombre !` })};
+        
+        data.quantity = parseInt(data.quantity, 10);
+        if(isNaN(data.quantity)) {return res.status(401).json({ message: `L'une des quantité de jetons n'est pas un nombre !` })};
       };
 
       // Recherche des CHIPS du USER et SUPPRESSION de ces CHIPS
@@ -53,19 +58,14 @@ const chipController = {
           });
       };
 
-      // Création d'un CHIP
+      //création des CHIPS
       for(const data of arrayData) {
-        data.value = parseInt(data.value, 10);
-        data.quantity = parseInt(data.quantity, 10);
-
-        //création des CHIPS
         const newChip = new Chip({
           quantity: data.quantity,
           color: data.color,
           value: data.value,
           user_id: userId
         });
-
         await newChip.save();
       }
 
