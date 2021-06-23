@@ -78,9 +78,10 @@ const tournamentController = {
     try {
       const arrayTournament = req.body[0];
       const arrayStructure = req.body[1];
+      let structuresCreated = {};
 
       // vérification que l'on reçoit des données Tournoi et Structure du FRONT
-      if(!arrayStructure || !arrayTournament) {return res.status(401).json({ message: `Pas de données tournoi ou structure du FRONT !`})};
+      if(!arrayStructure || !arrayTournament || arrayStructure.length < 1) {return res.status(401).json({ message: `Pas de données tournoi ou structure du FRONT !`})};
 
       // vérification des données obligatoires STRUCTURE et TOURNOI
       if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.cash_price || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires du tournoi soient correctement saisies !` });}
@@ -88,7 +89,7 @@ const tournamentController = {
       for(const data of arrayStructure) {
         if(!data.stage || !data.small_blind || !data.big_blind) { 
           return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies pour la structure du tournoi !` });
-            }
+        }
       };
 
       //Recherche du USER
@@ -130,16 +131,13 @@ const tournamentController = {
       
       if (tournamentCreated.length === 0) {return res.status(401).json({message: 'aucun tournoi de créé !'});}
 
-      // je renvoie la réponse = le nouveau tournoi
-      res.status(201).json(tournamentCreated);
-
-      // Lancement de la création de la structure avec le nouveau tournoi
       const tournamentId = tournamentCreated.id;
-      // création de la structure
-      createStructure([tournamentId, arrayStructure]);
+      structuresCreated = await createStructure([tournamentId, arrayStructure]);
+
+      res.status(201).json([tournamentCreated, structuresCreated]);
 
     } catch (error) {
-      res.status(500).json({ message: `Server error, please conta'ct' an administrator` });
+      res.status(500).json({ message: `Server error, please contact an administrator` });
     }
   },
   
@@ -159,7 +157,7 @@ const tournamentController = {
           return res.status(401).json({ message: `le tournoi ${id} n'a pas été trouvé !` });
       }
 
-      // Vérification des données tournois non vides du FRONT
+      // Vérification des données tournois non vides du FRONT ET que ce ne soit pas la STRUCTURE en premier objet
       if(!arrayTournament || arrayTournament.length > 1) {return res.status(401).json({message: 'Les données tournois sont ne sont pas cohérentes !'})}
 
       // vérification des données obligatoires du tournoi
@@ -171,7 +169,7 @@ const tournamentController = {
       if(smallBlindBdd != smallBlindTournament) {
         smallBlindModified = true;
         // Vérification des données structures non vides du FRONT
-        if(!arrayStructure) {
+        if(!arrayStructure || arrayStructure.length === 0) {
           return res.status(401).json({message: 'Les données structures ne doivent pas être vides si la small_bind change !'})
         } else {
           // vérification des données obligatoires pour chaque ligne de structure du front
@@ -242,7 +240,6 @@ const tournamentController = {
       .json({ message: `Server error, please contact an administrator` });
     }
   },
-
 };
 
 module.exports = tournamentController;
