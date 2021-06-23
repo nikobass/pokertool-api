@@ -31,7 +31,7 @@ const chipController = {
     try {
       const arrayData = req.body;
 
-      // Recherche du USER
+      // Vérification du USER
       const userId = parseInt(req.params.userId, 10);
       const user = await User.findByPk(userId);
       if (!user) {
@@ -47,7 +47,7 @@ const chipController = {
         }
       };
 
-      // Recherche des CHIPS ET SUPPRESSION
+      // Recherche des CHIPS du USER et SUPPRESSION de ces CHIPS
       const chips = await Chip.findAll({where: {user_id: userId}});
       if(chips.length > 0) {
          await Chip.destroy({
