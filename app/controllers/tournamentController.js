@@ -1,5 +1,5 @@
-const { Tournament, User } = require("../models");
-const { createStructure } = require("../middleware/structure");
+const { Tournament, User, Structure } = require("../models");
+const { createStructure } = require("../utils");
 const sanitizeHtml = require('sanitize-html');
 
 const tournamentController = {
@@ -7,27 +7,27 @@ const tournamentController = {
   // RECUPERATION DES TOURNOIS D'UN USER
  getAllTournaments: async (req, res) => {
   try {
-   const userId = parseInt(req.params.userId, 10);
+    const userId = parseInt(req.params.userId, 10);
     
-   // Recherche du USER
-   const user = await User.findByPk(userId);
-   if (!user) {
-    return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
+    // Recherche du USER
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas été trouvé !` })
     }
 
-   const tournaments = await Tournament.findAll({
-    where: {
-     user_id: userId,
-    },
-   });
+    // récupération de la liste des tournois du USER
+    const tournaments = await Tournament.findAll({
+      where: {
+        user_id: userId,
+      },
+    });
 
-   if (!tournaments) {
-    res
-     .status(401)
-     .json({ message: `pas de tournois trouvés pour l'utilisateur ${userId}` });
-   } else {
-    res.status(200).json(tournaments);
-   }
+    if(tournaments.length > 0) {
+      res.status(200).json(tournaments);
+    } else {
+      return res.status(401).json({ message: `l'utilisateur ${userId} n'a pas de tournoi !` });
+    }
+
   } catch (err) {
     res.status(500).json({ message: `Server error, please contact an administrator` });
   }
@@ -61,7 +61,7 @@ const tournamentController = {
       return res.status(401).json({ message: `Le tournoi ${id} n'a pas été trouvé !` });
      }
 
-     // Tournpoi trouvé = tournoi supprime
+     // Tournpoi trouvé = tournoi supprimé
      await tournament.destroy();
      res.status(200).json({ message: `Tournoi supprimé` });
   
@@ -122,6 +122,7 @@ const tournamentController = {
         status: "prévu",
         comments: arrayTournament.comments,
         small_blind: arrayTournament.small_blind,
+        chips_user: arrayTournament.chips_user,
         user_id: userId
       });
 
@@ -149,7 +150,8 @@ const tournamentController = {
       const arrayTournament = req.body[0];
       const arrayStructure = req.body[1];
       const id = parseInt(req.params.id, 10);
-      const smallBlindModified = false;
+      let smallBlindModified = false;
+      let structuresCreated = {};
 
       // on vérirfie que le tournoi est en BDD
       const tournament = await Tournament.findByPk(id);
@@ -167,7 +169,7 @@ const tournamentController = {
       const smallBlindTournament = arrayTournament.small_blind;
       const smallBlindBdd = tournament.small_blind;
       if(smallBlindBdd != smallBlindTournament) {
-        const smallBlindModified = true;
+        smallBlindModified = true;
         // Vérification des données structures non vides du FRONT
         if(!arrayStructure) {
           return res.status(401).json({message: 'Les données structures ne doivent pas être vides si la small_bind change !'})
@@ -186,22 +188,25 @@ const tournamentController = {
       }
 
       // Formatage des données tournoi
-      arrayTournament.name = sanitizeHtml(arrayTournament.user_name);
-      arrayTournament.comments = sanitizeHtml(arrayTournament.comments);
+      if(arrayTournament.name) {arrayTournament.name = sanitizeHtml(arrayTournament.name)};
+      if(arrayTournament.comments) {arrayTournament.comments = sanitizeHtml(arrayTournament.comments)};
 
-      arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10);
-      arrayTournament.speed = parseInt(arrayTournament.speed, 10);
-      arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10);
-      arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
-      arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
-      arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
+      if(arrayTournament.nb_players) {arrayTournament.nb_players = parseInt(arrayTournament.nb_players, 10)};
+      if(arrayTournament.speed) {arrayTournament.speed = parseInt(arrayTournament.speed, 10)};
+      if(arrayTournament.starting_stack) {arrayTournament.starting_stack = parseInt(arrayTournament.starting_stack, 10)};
+      if(arrayTournament.buy_in) {arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10)};
+      if(arrayTournament.small_blind) {arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10)};
+      if(arrayTournament.cash_price) {arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10)};
 
       // Modification du tournoi
       const tournamentUpdated = await tournament.update(arrayTournament);
-      res.status(201).json(tournamentUpdated);
 
       // si mofdification de la small_blind on modifie la structure du tournois
-      if(smallBlindModified) {createStructure([id, arrayStructure])};
+      if(smallBlindModified) {
+        structuresCreated = await createStructure([id, arrayStructure]);
+      };
+      
+      res.status(201).json([tournamentUpdated, structuresCreated]);
 
     } catch (error) {
       res.status(500).json({ message: `Server error, please contact an administrator` });

@@ -14,7 +14,7 @@ const authController = {
     data.email = sanitizeHtml(data.email);
     data.password = sanitizeHtml(data.password);
 
-    // vérification des données
+    // vérification des données obligatoires
     if (!data.email || !data.password) {
       return res.status(401).json({message: `email ou mot de passe non renseigné !`});
     }

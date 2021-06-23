@@ -30,20 +30,20 @@ const distributionController = {
 
     try {
       const arrayDistribution = req.body;
-       const distributionList = [];
+      const distributionList = [];
 
-      // vérification que les données DISTRIBUTION ne sont pas vides
-      if(arrayDistribution.length === 0 ) {
-        return res.status(401).json({message: `Les données de distribution ne doivent pas être vides !`});
-      }
- 
-      // Recherche du TOURNOI
+         // Verification du TOURNOI en BDD
       const tournamentId = parseInt(req.params.tournamentId);
       const tournament = await Tournament.findByPk(tournamentId);
       if (!tournament) {
         return res.status(401).json({ message: `Le tournoi ${tournamentId} n'a pas été trouvé !` });
       } 
 
+      // vérification que les données DISTRIBUTION ne sont pas vides
+      if(arrayDistribution.length === 0 ) {
+        return res.status(401).json({message: `Les données de distribution ne doivent pas être vides !`});
+      }
+ 
       // vérification des données obligatoires DISTRIBUTION du tournoi
       for(const data of arrayDistribution) {
         if(!data.color || !data.value || !data.quantity) { 
@@ -61,7 +61,7 @@ const distributionController = {
           });
       };     
 
-      // Création du DISTRIBUTOR avec donnée FRONT
+      // Création du DISTRIBUTOR avec données FRONT
       for(const dataDistribution of arrayDistribution) {
         dataDistribution.value = parseInt(dataDistribution.value, 10);
         dataDistribution.quantity = parseInt(dataDistribution.quantity, 10);
@@ -84,7 +84,6 @@ const distributionController = {
       res.status(500).json({ message: `Server error, please contact an administrator` });
     }
   },
-
 };
 
 module.exports = distributionController;

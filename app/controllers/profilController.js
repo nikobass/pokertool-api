@@ -8,13 +8,12 @@ const { Op } = require('sequelize');
 const profilController = {
  
   // CREATION D'UN UTILISATEUR
- createUser: async (req, res) => {
+  createUser: async (req, res) => {
 
   try {
    const data = req.body;
    
     if(!data.user_name || !data.email || !data.password) {return res.status(401).json({message: 'Vérifiez que les données obligatoires soient bien renseignées !'})};
-   
    
     data.user_name = sanitizeHtml(data.user_name);
     data.email = sanitizeHtml(data.email);
@@ -107,7 +106,6 @@ const profilController = {
   try {
    const id = parseInt(req.params.userId, 10);
 
-
    // recherche de l'utilisateur en BDD
    const user = await User.findByPk(id);
    if (!user) {
@@ -146,9 +144,9 @@ const profilController = {
   try {
     const data = req.body;
 
-    data.user_name = sanitizeHtml(data.user_name);
-    data.email = sanitizeHtml(data.email);
-    data.password = sanitizeHtml(data.password);
+    if(data.user_name) {data.user_name = sanitizeHtml(data.user_name)};
+    if(data.email) {data.email = sanitizeHtml(data.email)};
+    if(data.password) {data.password = sanitizeHtml(data.password)};
 
     const id = parseInt(req.params.userId, 10);
 
@@ -228,14 +226,16 @@ const profilController = {
       if (!isNumeric || !isUpperCase || !nbLetters) {
         return res.status(401).json({ message: "Votre mot de passe doit contenir une lettre majuscule et un chiffre. Il doit également comporté au minimum 8 caractères."})
       }
-    };
 
-    //On crypte le PWD
-    data.password =  BcryptData(data.password);
+      //On crypte le PWD
+      data.password =  BcryptData(data.password);
+    } else {
+      // si on n'a pas de PWD on récupère celui de la BDD
+      data.password = user.password;
+    };
 
     // update
     const userSaved = await user.update(data);
-
     res.status(200).json(userSaved);
 
     } catch (error) {
