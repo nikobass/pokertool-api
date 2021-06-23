@@ -41,9 +41,7 @@ const chipController = {
       // vérification des données obligatoires
       for(const data of arrayData) {
         if(!data.color || !data.value || !data.quantity) { 
-          return res
-            .status(401)
-            .json({ message: `Vérifier que toutes les informations obligatoires soient correctement saisies !` });
+          return res.status(401).json({ message: `Vérifier que toutes les données ne soient pas nulles !` });
         }
       };
 
