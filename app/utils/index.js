@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { Tournament, Structure, Cashprice } = require("../models");
-const emailValidator = require("email-validator");
 
 function generateAccessToken(userId) {
  // 86400 s = 24h
@@ -107,32 +106,9 @@ async function createCashPrice(data) {
   }
 };
 
-function verifMail(email) {
-    //format d'email invalide
-    if (!emailValidator.validate(email)) {
-      return false;
-    }
-    // On vérifie la présence d'une majuscule
-    
-    let emailToVerif = email.split('@');
-
-    for(let i = 0; i < emailToVerif.length; i++) {
-      let emailCharacter = '';
-      let index = 0;
-      while (index < emailToVerif[i].length) {
-
-        emailCharacter = emailToVerif[i].charAt(index);
-        console.log(emailToVerif[i], emailCharacter, index)
-        if (emailCharacter === emailCharacter.toUpperCase()) {
-
-          return false;
-        }
-      index++;
-
-      }
-    }
-    console.log('OKL')
-    return true;
-}
+async function verifMail(email) {
+    var mailformat = /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*$/;
+    if(email.match(mailformat)) {return true} else {return false};
+};
 
 module.exports = { generateAccessToken, BcryptData, createStructure, createCashPrice, verifMail };

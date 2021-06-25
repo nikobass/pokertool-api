@@ -1,4 +1,3 @@
-const emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
 const sanitizeHtml = require('sanitize-html');
@@ -47,22 +46,8 @@ const profilController = {
     }
 
     //format d'email invalide
-    if (!emailValidator.validate(email)) {
-      return res.status(401).json ({message : "Votre email doit correspondre au format suivant : monmail@gmail.com."})
-    }
-    // // On vérifie la présence d'une majuscule
-    // let emailCharacter = '';
-    // let index = 0;
-    // let emailToVerif = email.split('@', 1)[0];
-    //  while (index < emailToVerif.length) {
-    //   console.log(emailToVerif)
-    //   emailCharacter = emailToVerif.charAt(index);
-
-    //   if (emailCharacter === emailCharacter.toUpperCase()) {
-    //     return res.status(401).json ({message : "Votre email ne doit pas comprendre de majuscules. Il doit correspondre au format suivant : monmail@gmail.com."})
-    //   }
-    // index++;
-    // }
+    const formatMail = await verifMail(email);
+    if(!formatMail) {return res.status(401).json({message : "Votre email doit correspondre au format suivant : monmail@gmail.com"})}
 
     // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
     const verifUserPwd = req.body.password;
@@ -195,25 +180,13 @@ const profilController = {
         id: {[Op.ne]: id},
       },
     });
-
     if (userEmail) {
         return res.status(401).json({ message : "mail a déjà été utilisé sur notre site."})
     }
 
     //format d'email invalide
-    if (!emailValidator.validate(data.email)) {
-        return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
-        }
-    // let emailCharacter = '';
-    // let index = 0;
-    // while (index < data.email.length) {
-    //   emailCharacter = data.email.charAt(index);
-    //   console.log(index, emailCharacter)
-    //   if (emailCharacter === emailCharacter.toUpperCase()) {
-    //       return res.status(401).json ({message : "Votre email ne doit pas comprendre de majuscules. Il doit correspondre au format suivant : monmail@gmail.com."})
-    //   }
-    //   index++;
-    // }
+    const formatMail = await verifMail(data.email);
+    if(!formatMail) {return res.status(401).json({message : "Votre email doit correspondre au format suivant : monmail@gmail.com"})}
 
     // Vérification du PWD : le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
     if (data.password) {
