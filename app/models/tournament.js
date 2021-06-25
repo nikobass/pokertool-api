@@ -25,9 +25,6 @@ Tournament.init({
     buy_in: {
         type: DataTypes.INTEGER,
         allowNull: false},
-    cash_price: {
-        type: DataTypes.INTEGER,
-        allowNull: false},
     status: {
         type: DataTypes.TEXT,
         allowNull: false},

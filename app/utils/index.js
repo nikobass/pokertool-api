@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { Tournament, Structure } = require("../models");
+const { Tournament, Structure, Cashprice } = require("../models");
+const emailValidator = require("email-validator");
 
 function generateAccessToken(userId) {
  // 86400 s = 24h
@@ -61,4 +62,77 @@ async function createStructure(data) {
     }
 };
 
-module.exports = { generateAccessToken, BcryptData, createStructure };
+async function createCashPrice(data) {
+
+  try {
+    const tournamentId = parseInt(data[0], 10);
+    const cashPricesData = data[1];
+    const cashPriceList = [];
+
+    //Vérification que les données attendues soient préssentes et non vides
+    if(!tournamentId || !cashPricesData)  {
+      res.status(401).json({ message: `Pas d'identification du tournoi OU de données cash-price !` })
+    }
+
+    //Recherche du TOURNOI
+    const tournament = await Tournament.findAll({where: {id: tournamentId}});
+    if (!tournament) {
+      return res.status(401).json({ message: `Aucun tournoi trouvé pour le tournoi : ${tournamentId} !` })
+    }
+
+    // Recherche et suppression des données CASH PRICE du tournoi en BDD
+    const cashPricesBdd = await Cashprice.findAll({where: {tournament_id: tournamentId}});
+    if(cashPricesBdd.length > 0) {
+       await Cashprice.destroy({
+         where: {tournament_id: tournamentId}
+        });
+    };     
+
+    //création des cash-price
+    for(cashPrice of cashPricesData) {
+      const newCashPrice = new Cashprice({
+        position: cashPrice.position,
+        amount: cashPrice.amount,
+        tournament_id: tournamentId
+      });
+
+      const cashPriceCreated = await newCashPrice.save();
+      cashPriceList.push(cashPriceCreated)
+    }
+
+    return cashPriceList;
+    
+  } catch(error) {
+      return res.status(401).send();
+  }
+};
+
+function verifMail(email) {
+    //format d'email invalide
+    if (!emailValidator.validate(email)) {
+      return false;
+    }
+    // On vérifie la présence d'une majuscule
+    
+    let emailToVerif = email.split('@');
+
+    for(let i = 0; i < emailToVerif.length; i++) {
+      let emailCharacter = '';
+      let index = 0;
+      while (index < emailToVerif[i].length) {
+
+        emailCharacter = emailToVerif[i].charAt(index);
+        console.log(emailToVerif[i], emailCharacter, index)
+        if (emailCharacter === emailCharacter.toUpperCase()) {
+
+          return false;
+        }
+      index++;
+
+      }
+    }
+    console.log('OKL')
+    return true;
+}
+
+module.exports = { generateAccessToken, BcryptData, createStructure, createCashPrice, verifMail };
