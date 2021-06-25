@@ -2,7 +2,7 @@ const emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
 const sanitizeHtml = require('sanitize-html');
-const { BcryptData } = require('../utils');
+const { BcryptData, verifMail } = require('../utils');
 const { Op } = require('sequelize');
 
 const profilController = {
@@ -48,8 +48,21 @@ const profilController = {
 
     //format d'email invalide
     if (!emailValidator.validate(email)) {
-        return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
-        }
+      return res.status(401).json ({message : "Votre email doit correspondre au format suivant : monmail@gmail.com."})
+    }
+    // // On vérifie la présence d'une majuscule
+    // let emailCharacter = '';
+    // let index = 0;
+    // let emailToVerif = email.split('@', 1)[0];
+    //  while (index < emailToVerif.length) {
+    //   console.log(emailToVerif)
+    //   emailCharacter = emailToVerif.charAt(index);
+
+    //   if (emailCharacter === emailCharacter.toUpperCase()) {
+    //     return res.status(401).json ({message : "Votre email ne doit pas comprendre de majuscules. Il doit correspondre au format suivant : monmail@gmail.com."})
+    //   }
+    // index++;
+    // }
 
     // Le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
     const verifUserPwd = req.body.password;
@@ -59,7 +72,7 @@ const profilController = {
     let character = "";
     let i = 0;
 
-        // On vérifie la longueur du mail
+    // On vérifie la longueur du PWD
     if (verifUserPwd.length >= 8) {
         nbLetters = true;
     }
@@ -191,7 +204,17 @@ const profilController = {
     if (!emailValidator.validate(data.email)) {
         return res.status(401).json ({message : "Votre email doit correspondre au format suivant monMail99@gmail.com."})
         }
-    
+    // let emailCharacter = '';
+    // let index = 0;
+    // while (index < data.email.length) {
+    //   emailCharacter = data.email.charAt(index);
+    //   console.log(index, emailCharacter)
+    //   if (emailCharacter === emailCharacter.toUpperCase()) {
+    //       return res.status(401).json ({message : "Votre email ne doit pas comprendre de majuscules. Il doit correspondre au format suivant : monmail@gmail.com."})
+    //   }
+    //   index++;
+    // }
+
     // Vérification du PWD : le mot de passe doit contenir au moins 8 caractères et doit contenir au moins une majuscule et un chiffre.
     if (data.password) {
       
