@@ -287,10 +287,12 @@ const tournamentController = {
         where: {
           id: id,
         },
-        include: { // on recupère tout ce qui est lié au tournoi
-          all:true,
-          nested: true,
-        }
+        include: [
+          {association: 'cashprices'},
+          {association: 'Structures'},
+          {association: 'user',
+           include: [{association: 'chips'}]}
+        ]
       });
 
       if (!timer) {
