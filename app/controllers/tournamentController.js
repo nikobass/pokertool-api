@@ -227,9 +227,6 @@ const tournamentController = {
        arrayTournament.buy_in = parseInt(arrayTournament.buy_in, 10);
        if(isNaN(arrayTournament.buy_in)) {return res.status(401).json({ message: `Le buy-in n'est pas un nombre !`})};
  
-       arrayTournament.cash_price = parseInt(arrayTournament.cash_price, 10);
-       if(isNaN(arrayTournament.cash_price)) {return res.status(401).json({ message: `Le cash-price n'est pas un nombre !`})};
- 
        arrayTournament.small_blind = parseInt(arrayTournament.small_blind, 10);
        if(isNaN(arrayTournament.small_blind)) {return res.status(401).json({ message: `Là petite blind n'est pas un nombre !`})};
 
