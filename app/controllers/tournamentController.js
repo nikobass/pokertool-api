@@ -197,7 +197,7 @@ const tournamentController = {
       const arrayStructure = req.body[1];
       const arrayCashPrice = req.body[2];
       const id = parseInt(req.params.id, 10);
-      let smallBlindModified = false;
+      let structureModified = false;
       let structuresCreated = [];
       let cashPriceCreated= [];
 
@@ -234,8 +234,18 @@ const tournamentController = {
       // si small_blind transmise différente de small_blind BDD alors besoin des données structures
       const smallBlindTournament = arrayTournament.small_blind;
       const smallBlindBdd = tournament.small_blind;
-      if(smallBlindBdd != smallBlindTournament) {
-        smallBlindModified = true;
+
+      const nbPlayersTournament = arrayTournament.nb_players;
+      const nbPlayersBdd = tournament.nb_players;
+
+      const startingStackTournament = arrayTournament.starting_stack;
+      const startingStackBdd = tournament.starting_stack;
+
+      const speedTournament = arrayTournament.speed;
+      const speddBdd = tournament.speed;
+
+      if(smallBlindBdd != smallBlindTournament || nbPlayersBdd != nbPlayersTournament || startingStackBdd != startingStackTournament || speddBdd != speedTournament) {
+        structureModified = true;
         // Vérification des données structures non vides du FRONT
         if(!arrayStructure || arrayStructure.length === 0) {
           return res.status(401).json({message: 'Les données structures ne doivent pas être vides si la small_bind change !'})
@@ -262,7 +272,8 @@ const tournamentController = {
       const tournamentUpdated = await tournament.update(arrayTournament);
 
       // si mofdification de la small_blind on modifie la structure du tournois
-      if(smallBlindModified) {
+      if(structureModified) {
+        console.log("STRUCTURE MODIFI2E = ", structureModified)
         structuresCreated = await createStructure([id, arrayStructure]);
       };
       
