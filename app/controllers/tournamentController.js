@@ -89,8 +89,9 @@ const tournamentController = {
       let structuresCreated = [];
       let cashPriceCreated = [];
 
+      console.log(arrayCashPrice)
       // vérification que l'on reçoit des données Tournoi, Structure et Cashprice du FRONT
-      if(!arrayStructure || !arrayTournament || !arrayCashPrice) {return res.status(401).json({ message: `Pas de données tournoi, structure ou cash-price !`})};
+      if(!arrayStructure || !arrayTournament || !arrayCashPrice || arrayTournament.length === 0 || arrayStructure.length === 0 || arrayCashPrice.length === 0) {return res.status(401).json({ message: `Pas de données tournoi, structure ou cash-price !`})};
 
       // vérification des données TOURNOI
       if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires du tournoi soient correctement saisies !` });}
@@ -171,7 +172,7 @@ const tournamentController = {
       if (tournamentCreated.length === 0) {return res.status(401).json({message: 'aucun tournoi de créé !'});}
 
       const tournamentId = tournamentCreated.id;
-      
+
       // création de la structure du tournoi
       structuresCreated = await createStructure([tournamentId, arrayStructure]);
       if (structuresCreated.length === 0) {return res.status(401).json({message: 'aucune structure de créée !'});}
@@ -207,7 +208,7 @@ const tournamentController = {
       }
 
      // vérification que l'on reçoit des données Tournoi, Structure et Cashprice du FRONT
-     if(!arrayStructure || !arrayTournament || !arrayCashPrice) {return res.status(401).json({ message: `Pas de données tournoi, structure ou cash-price !`})};
+     if(!arrayStructure || !arrayTournament || !arrayCashPrice || arrayTournament.length ===0 || arrayStructure.length === 0 || arrayCashPrice.length === 0) {return res.status(401).json({ message: `Pas de données tournoi, structure ou cash-price !`})};
 
       // vérification des données obligatoires du tournoi
       if(!arrayTournament.name || !arrayTournament.date || !arrayTournament.location || !arrayTournament.nb_players || !arrayTournament.speed || !arrayTournament.starting_stack || !arrayTournament.buy_in || !arrayTournament.status || !arrayTournament.small_blind) { return res.status(401).json({ message: `Vérifier que toutes les informations obligatoires du tournoi soient correctement saisies !` });};
